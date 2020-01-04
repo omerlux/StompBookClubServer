@@ -18,7 +18,7 @@ public class UsersControl {
     private CopyOnWriteArrayList<User> all_user_array;
     private ConcurrentHashMap<Integer, User> active_user_id_map;
     private ConnectionsImpl connections;
-    private ConcurrentHashMap <String, CopyOnWriteArrayList<Integer> > topicArraysMap;
+    private ConcurrentHashMap <String, CopyOnWriteArrayList<Integer> > topic_subArrays_Map;
     //------------------- end edit 4/1 --------------------------
 
     public UsersControl(){
@@ -26,7 +26,7 @@ public class UsersControl {
         all_user_array = new CopyOnWriteArrayList<>();
         active_user_id_map = new ConcurrentHashMap<>();
         connections = new ConnectionsImpl();
-        topicArraysMap = new ConcurrentHashMap<>();
+        topic_subArrays_Map = new ConcurrentHashMap<>();
         //------------------- end edit 4/1 --------------------------
     }
 
@@ -71,10 +71,10 @@ public class UsersControl {
         //------------------- start edit 4/1 ------------------------
         CopyOnWriteArrayList<Integer> tmp_array = new CopyOnWriteArrayList<>();
         tmp_array.add(id);
-        if(topicArraysMap.putIfAbsent(topic, tmp_array) != null){        //PutIfAbsent returns null if there is no topic
+        if(topic_subArrays_Map.putIfAbsent(topic, tmp_array) != null){        //PutIfAbsent returns null if there is no topic
             // that topic exists in the topic_map
-            if(!topicArraysMap.get(topic).contains(id)) {                //checks if already contains id
-                topicArraysMap.get(topic).add(id);                       // ADDING client id to the topic
+            if(!topic_subArrays_Map.get(topic).contains(id)) {                //checks if already contains id
+                topic_subArrays_Map.get(topic).add(id);                       // ADDING client id to the topic
                 active_user_id_map.get(id).addTopic(topic);              // ADDING topic to user -> USER        //TODO: may be deleted
             }
         }
@@ -90,8 +90,8 @@ public class UsersControl {
      */
     public boolean exitGenre (Integer id, String topic){        // Integer - for removing Object, NOT index
         //------------------- start edit 4/1 ------------------------
-        if(topicArraysMap.contains(topic)){                     // checks if the topic exists in the map
-            topicArraysMap.get(topic).remove(id);               // REMOVES the user (id) from the topic array
+        if(topic_subArrays_Map.contains(topic)){                     // checks if the topic exists in the map
+            topic_subArrays_Map.get(topic).remove(id);               // REMOVES the user (id) from the topic array
             active_user_id_map.get(id).removeTopic(topic);      // REMOVES the topic from the user -> USER        //TODO: may be deleted
             return true;
         }
@@ -108,14 +108,12 @@ public class UsersControl {
      */
     public boolean logoutTopicReset (Integer id){                   // Integer - for removing Object, NOT index
         //------------------- start edit 4/1 ------------------------
-        for(CopyOnWriteArrayList curr_topic_array : topicArraysMap.values()){
+        for(CopyOnWriteArrayList curr_topic_array : topic_subArrays_Map.values()){
             curr_topic_array.remove(id);                            // removing the user (id) from each topic list
         }
         active_user_id_map.get(id).removeAllTopics();               // REMOVES ALL topics from the user -> USER        //TODO: may be deleted
         return true;    //TODO: maybe a void function is enough
         //------------------- end edit 4/1 --------------------------
     }
-
-
 
 }
