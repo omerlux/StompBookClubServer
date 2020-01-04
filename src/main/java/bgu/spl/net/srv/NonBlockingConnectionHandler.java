@@ -122,6 +122,6 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
      * should be used by the send commands in the connections implementations
      */
     public void send(T msg) {
-        ////TODO: IMPLEMENT IF NEEDED
+        //TODO: IMPLEMENT IF NEEDED
     }
 }
