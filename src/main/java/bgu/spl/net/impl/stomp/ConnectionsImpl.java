@@ -2,13 +2,9 @@ package bgu.spl.net.impl.stomp;
 
 import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
-import com.sun.tools.jdi.LockObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -24,7 +20,6 @@ public class ConnectionsImpl<T> implements Connections<T> {
     //------------------- start edit 4/1 ------------------------
     //TODO: watch for THREAD SAFE
     private Map<Integer , ConnectionHandler<T>> active_client_map;
-    //private ConcurrentHashMap<String , ArrayList<Integer>> topic_map;
     private AtomicInteger id_count;
     private ReadWriteLock readWriteLock;
     //------------------- end edit 4/1 --------------------------
@@ -32,7 +27,6 @@ public class ConnectionsImpl<T> implements Connections<T> {
     public ConnectionsImpl(){
         //------------------- start edit 4/1 ------------------------
         active_client_map = new HashMap<>();
-        //topic_map = new ConcurrentHashMap<>();
         id_count = new AtomicInteger(0);
         readWriteLock = new ReentrantReadWriteLock();
         //------------------- end edit 4/1 --------------------------
@@ -116,21 +110,4 @@ public class ConnectionsImpl<T> implements Connections<T> {
         return active_client_map;
     }
 
-    /**
-     * Adding a client {@param id} to a specific topic {@param topic}
-     */
-    public void subscribeToTopic(int id, String topic){
-        //------------------- start edit 4/1 ------------------------
-        //TODO: not finished
-        /** Not thread safe**/
-        /** assumption: id is already in the active_clients_map **/
-     /*   ArrayList<Integer> tmp_array = new ArrayList<>();
-        tmp_array.add(id);
-        if(topic_map.putIfAbsent(topic, tmp_array) != null){        //PutIfAbsent returns null if there is no topic
-            // that topic exists in the topic_map
-            if(!topic_map.get(topic).contains(id))                  //checks if already contains id
-                topic_map.get(topic).add(id);                       // ADDING client id to the topic
-        }*/
-        //------------------- end edit 4/1 --------------------------
-    }
 }

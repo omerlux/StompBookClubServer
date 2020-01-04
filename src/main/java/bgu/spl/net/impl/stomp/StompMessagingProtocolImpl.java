@@ -1,6 +1,7 @@
 package bgu.spl.net.impl.stomp;
 
 import bgu.spl.net.api.StompMessagingProtocol;
+import bgu.spl.net.impl.stomp.frames.Message;
 import bgu.spl.net.srv.Connections;
 
 public class StompMessagingProtocolImpl implements StompMessagingProtocol {
@@ -8,7 +9,7 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     //------------------- start edit 4/1 ------------------------
     private boolean shouldTerminate = false;
     private int connectionId;
-    private ConnectionsImpl<String> connections;
+    private ConnectionsImpl<Message> connections;
     private UsersControl usersControl;
     //------------------- end edit 4/1 --------------------------
 
@@ -16,7 +17,7 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
      * Used to initiate the current client protocol with it's personal connection ID and the connections implementation
      **/
     @Override
-    public void start(int connectionId, Connections<String> connections) {
+    public void start(int connectionId, Connections<Message> connections) {
         //------------------- start edit 4/1 ------------------------
         this.connectionId = connectionId;
         this.connections = (ConnectionsImpl) connections;
@@ -29,10 +30,9 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
      * Unlike messaging protocol, responses are sent via the connection objects send functions (if needed).
      */
     @Override
-    public void process(String message) {
+    public void process(Message message) {
         //------------------- start edit 4/1 ------------------------
-        shouldTerminate = "DISCONNECT".equals(message); // TODO: edit later with 'receipt' answer
-
+        message.process();
         //------------------- end edit 4/1 --------------------------
 
     }
@@ -44,6 +44,16 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     public boolean shouldTerminate() {
         //------------------- start edit 4/1 ------------------------
         return shouldTerminate;
+        //------------------- end edit 4/1 --------------------------
+    }
+
+    /**
+     * change {@param terminate} to true - will happen at the Message DISCONNECT
+     */
+
+    public void terminate(){
+        //------------------- start edit 4/1 ------------------------
+        this.shouldTerminate=true;
         //------------------- end edit 4/1 --------------------------
     }
 }
