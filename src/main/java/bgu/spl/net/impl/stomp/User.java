@@ -59,12 +59,14 @@ public class User {
      * @return
      */
     public Integer get_SubNum_by_TopicName (String topic){
+        //------------------- start edit 7/1 ------------------------
         for(Map.Entry<Integer,String> entry : topic_id_map.entrySet()){
             if(entry.getValue().equals(topic)){
                 return entry.getKey();      // this will be the SubNum
             }
         }
         return null;
+        //------------------- end edit 7/1 ------------------------
     }
 
     /**
