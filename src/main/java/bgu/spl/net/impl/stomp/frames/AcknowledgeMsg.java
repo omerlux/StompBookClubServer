@@ -21,6 +21,8 @@ public class AcknowledgeMsg implements Message {
 
     @Override
     public String getMessageData() {
-        return null;
+        //------------------- start edit 7/1 ------------------------
+        return msgData;
+        //------------------- end edit 7/1 --------------------------
     }
 }

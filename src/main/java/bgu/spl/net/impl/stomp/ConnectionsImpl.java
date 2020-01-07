@@ -3,6 +3,7 @@ package bgu.spl.net.impl.stomp;
 import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -76,7 +77,12 @@ public class ConnectionsImpl<T> implements Connections<T> {
     public void disconnect(int connectionId) {
         //------------------- start edit 4/1 ------------------------
         readWriteLock.writeLock().lock();
-        active_client_map.remove(connectionId);
+        try {
+            active_client_map.get(connectionId).close();        //TODO: maybe redundant
+            active_client_map.remove(connectionId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         readWriteLock.writeLock().unlock();
         //------------------- end edit 4/1 --------------------------
     }

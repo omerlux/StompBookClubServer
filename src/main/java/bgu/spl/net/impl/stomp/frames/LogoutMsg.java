@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.stomp.frames;
 
+import bgu.spl.net.impl.stomp.UsersControl;
 import bgu.spl.net.srv.Connections;
 
 public class LogoutMsg implements Message {
@@ -16,7 +17,9 @@ public class LogoutMsg implements Message {
     @Override
     public void process(int connectionID, Connections connections) {
         //------------------- start edit 7/1 ------------------------
-
+        UsersControl.getInstance().logoutTopicReset(connectionID);      //Remove user from all topic
+        connections.send(connectionID, new ReceiptMsg(reciept));        //Send receipt to client
+        connections.disconnect(connectionID);                           //Disconnect from connections
         //------------------- end edit 7/1 --------------------------
     }
 

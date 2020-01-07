@@ -122,16 +122,17 @@ public class UsersControl {
     /**
      * This function will logout the user from the server, by resetting the topics subscriptions
      * Here we ONLY removes it from the topics it was registered to,
-     * TODO: send receipt frame, close socket, disconnect from Connections
-     * @param id
+     * >>> send receipt frame, disconnect from Connections - Done in LogoutMsg
+     * TODO: close socket in client
+     * @param connectionID
      * @return
      */
-    public boolean logoutTopicReset (Integer id){                   // Integer - for removing Object, NOT index
+    public boolean logoutTopicReset (Integer connectionID){                   // Integer - for removing Object, NOT index
         //------------------- start edit 4/1 ------------------------
         for(CopyOnWriteArrayList curr_topic_array : topic_connectionId_Map.values()){
-            curr_topic_array.remove(id);                            // removing the user (id) from each topic list
+            curr_topic_array.remove(connectionID);                            // removing the user (id) from each topic list
         }
-        active_user_id_map.get(id).removeAllTopics();               // REMOVES ALL topics from the user -> USER        //TODO: may be deleted
+        active_user_id_map.get(connectionID).removeAllTopics();               // REMOVES ALL topics from the user -> USER        //TODO: may be deleted
         return true;    //TODO: maybe a void function is enough
         //------------------- end edit 4/1 --------------------------
     }
