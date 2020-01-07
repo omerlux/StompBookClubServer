@@ -3,7 +3,7 @@ package bgu.spl.net.impl.stomp;
 import java.util.Queue;
 import java.util.Stack;
 
-public class Book {
+public class Book_ON_CLIENT_ONLY {
     //------------------- start edit 4/1 --------------------------
     private String topic;
     private String name;
@@ -11,7 +11,7 @@ public class Book {
     private Stack<User> originalOwner;
     //------------------- end edit 4/1 --------------------------
 
-    public Book (String topic, String name){
+    public Book_ON_CLIENT_ONLY (String topic, String name){
         //------------------- start edit 4/1 --------------------------
         this.topic = topic;
         this.name = name;

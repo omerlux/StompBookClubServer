@@ -58,16 +58,15 @@ public class ConnectionsImpl<T> implements Connections<T> {
      * Sends message T to client subscribed to that specific channel == topic.
      */
     public void send(String topic, T msg) {
-        //------------------- start edit 4/1 ------------------------
-        //TODO: not finished - Maybe send to another function in upper layer
-        /*readWriteLock.readLock().lock();
-        for(Integer curr_id : this.topic_map.get(topic)){
+        //------------------- start edit 7/1 ------------------------
+        for(Integer curr_id : UsersControl.getInstance().getTopicList(topic)){
+            readWriteLock.readLock().lock();                //TODO: should we lock here?
             if(active_client_map.containsKey(curr_id)){
                 active_client_map.get(curr_id).send(msg);
             }
+            readWriteLock.readLock().unlock();
         }
-        readWriteLock.readLock().unlock();*/
-        //------------------- end edit 4/1 --------------------------
+        //------------------- end edit 7/1 --------------------------
     }
 
     @Override

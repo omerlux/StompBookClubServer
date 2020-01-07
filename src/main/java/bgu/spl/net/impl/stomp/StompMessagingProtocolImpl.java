@@ -4,13 +4,15 @@ import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.impl.stomp.frames.Message;
 import bgu.spl.net.srv.Connections;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class StompMessagingProtocolImpl implements StompMessagingProtocol {
 
     //------------------- start edit 4/1 ------------------------
     private boolean shouldTerminate = false;
     private int connectionId;
     private ConnectionsImpl<Message> connections;
-    private UsersControl usersControl;
+    private static AtomicInteger messageCounter=new AtomicInteger(0);
     //------------------- end edit 4/1 --------------------------
 
     /**
@@ -32,7 +34,7 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     @Override
     public void process(Message message) {
         //------------------- start edit 4/1 ------------------------
-        message.process();
+        message.process(connectionId,connections);
         //------------------- end edit 4/1 --------------------------
 
     }
@@ -55,5 +57,9 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
         //------------------- start edit 4/1 ------------------------
         this.shouldTerminate=true;
         //------------------- end edit 4/1 --------------------------
+    }
+
+    public static int getNewMessageId(){
+        return messageCounter.getAndIncrement();
     }
 }

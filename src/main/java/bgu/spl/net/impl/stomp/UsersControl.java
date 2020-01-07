@@ -4,35 +4,48 @@ import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UsersControl {
     /**
      * The purpose of this class, is to manage the users database and its changes due to different commands
      * It's not connect directly to the server-client communication
      **/
-    //------------------- start edit 4/1 ------------------------
-    private CopyOnWriteArrayList<User> all_user_array;
-    private ConcurrentHashMap<Integer, User> active_user_id_map;
+    //------------------- start edit 7/1 ------------------------
+    private CopyOnWriteArrayList<User> all_user_array;                                          // Global userId map
+    private static AtomicInteger userCounter;                                                   // User counter, to track how many users are in the database
     private ConnectionsImpl connections;
-    private ConcurrentHashMap <String, CopyOnWriteArrayList<Integer> > topic_subArrays_Map;
-    //------------------- end edit 4/1 --------------------------
+    private ConcurrentHashMap<Integer, User> active_user_id_map;                                // Connected user's connectionId
+    private ConcurrentHashMap <String, CopyOnWriteArrayList<Integer> > topic_connectionId_Map;  // Only active users are in this map
+    private static class SingletonHolder{
+        private static UsersControl UC_instance = new UsersControl();
+    }
+    //------------------- end edit 7/1 --------------------------
 
     public UsersControl(){
         //------------------- start edit 4/1 ------------------------
         all_user_array = new CopyOnWriteArrayList<>();
         active_user_id_map = new ConcurrentHashMap<>();
         connections = new ConnectionsImpl();
-        topic_subArrays_Map = new ConcurrentHashMap<>();
+        topic_connectionId_Map = new ConcurrentHashMap<>();
+        userCounter=new AtomicInteger(0);
         //------------------- end edit 4/1 --------------------------
+    }
+
+    public static UsersControl getInstance(){
+        //------------------- start edit 7/1 ------------------------
+        return SingletonHolder.UC_instance;
+        //------------------- end edit 7/1 --------------------------
     }
 
     /**
      * login function will login the user to the system, only if userPassword = user.getPassword
-     * @param id
+     * @param connectionId
      * @param userName
      * @param userPassword
      *
@@ -40,59 +53,66 @@ public class UsersControl {
      * @return "logged on" if user already logged on
      * @return "wrong pass" if password is incorrect
      */
-    public String login(int id, String userName, String userPassword){
+    public String login(int connectionId, String userName, String userPassword){
         //------------------- start edit 4/1 ------------------------
         for (User u: all_user_array) {
-            if (u.getName().equals(userName)){
-                if (connections.getActiveClientMap().containsKey(id))      //User is already logged on
+            if (u.getName().equals(userName)){  // found the name of the user
+                if (connections.getActiveClientMap().containsKey(connectionId))      //User is already logged on
                     return "logged on";
                 else {
-                    if (u.getPassword().equals(userPassword))                              //User name + password are correct
+                    if (u.getPassword().equals(userPassword)) {                      //User name + password are correct
+                        active_user_id_map.put(connectionId,u);                      //adding curr user & id to the map
                         return "connected";
+                    }
                     else
-                        return "wrong pass";                                               //Password is incorrect
+                        return "wrong pass";                               //Password is incorrect
                 }
             }
         }
-        User newUsr = new User(userName,userPassword,id);              //Create new user
-        all_user_array.add(newUsr);                                     //adding new user to the general user map
-        active_user_id_map.put(id,newUsr);                                    //adding new user & id to the map
+        int tmp_count = userCounter.incrementAndGet();                     //inc the counter of users
+        User newUsr = new User(userName,userPassword,tmp_count);           //Create new user
+        all_user_array.add(tmp_count,newUsr);                              //adding new user to the general user array, in the specified index
+        active_user_id_map.put(connectionId,newUsr);                       //adding new user & connectionId to the ActiveUserMap
         return "connected";
         //------------------- end edit 4/1 --------------------------
     }
 
     /**
      * This function is for subscribing a user to a topic
-     * @param id
+     * @param connectionId             The user current connectionId
      * @param topic
+     * @param topic_idByUser           The user's id for the specific topic
      * @return true always.
      */
-    public boolean joinGenre (int id, String topic){
-        //------------------- start edit 4/1 ------------------------
+    public boolean joinGenre (Integer connectionId, String topic, Integer topic_idByUser){
+        //------------------- start edit 7/1 ------------------------
         CopyOnWriteArrayList<Integer> tmp_array = new CopyOnWriteArrayList<>();
-        tmp_array.add(id);
-        if(topic_subArrays_Map.putIfAbsent(topic, tmp_array) != null){        //PutIfAbsent returns null if there is no topic
+        tmp_array.add(connectionId);
+        if(topic_connectionId_Map.putIfAbsent(topic, tmp_array) != null){        //PutIfAbsent returns null if there is no topic
             // that topic exists in the topic_map
-            if(!topic_subArrays_Map.get(topic).contains(id)) {                //checks if already contains id
-                topic_subArrays_Map.get(topic).add(id);                       // ADDING client id to the topic
-                active_user_id_map.get(id).addTopic(topic);              // ADDING topic to user -> USER        //TODO: may be deleted
+            if(!topic_connectionId_Map.get(topic).contains(connectionId)) {            //checks if already contains id
+                topic_connectionId_Map.get(topic).add(connectionId);                   // ADDING client id to the topic
+                active_user_id_map.get(connectionId).addTopic(topic,topic_idByUser);   // ADDING topic_id by user to user-> USER
             }
+            else
+                return false; //this user has already subscribed to this topic
         }
-        return true;    //TODO: maybe a void function is enough
-        //------------------- end edit 4/1 --------------------------
+        return true; // subscribed success
+        //------------------- end edit 7/1 --------------------------
     }
 
     /**
      * This function will unsubscribe user (id) from the topic
-     * @param id
-     * @param topic
+     * @param connectionId
+     * @param topic_idByUser
      * @return true if succeeded, false if no such topic
      */
-    public boolean exitGenre (Integer id, String topic){        // Integer - for removing Object, NOT index
+    public boolean exitGenre (Integer connectionId, Integer topic_idByUser){       // Integer - for removing Object, NOT index
         //------------------- start edit 4/1 ------------------------
-        if(topic_subArrays_Map.contains(topic)){                     // checks if the topic exists in the map
-            topic_subArrays_Map.get(topic).remove(id);               // REMOVES the user (id) from the topic array
-            active_user_id_map.get(id).removeTopic(topic);      // REMOVES the topic from the user -> USER        //TODO: may be deleted
+        String topic = active_user_id_map.get(connectionId).getTopic_id_map().get(topic_idByUser);
+        if(topic!=null){        //The user has this topic in his subscription list
+            topic_connectionId_Map.get(topic).remove(connectionId);                      // REMOVES the user (id) from the topic array
+            active_user_id_map.get(connectionId).removeTopic(topic_idByUser);      // REMOVES the topic from the user -> USER        //TODO: may be deleted
             return true;
         }
         return false;
@@ -108,7 +128,7 @@ public class UsersControl {
      */
     public boolean logoutTopicReset (Integer id){                   // Integer - for removing Object, NOT index
         //------------------- start edit 4/1 ------------------------
-        for(CopyOnWriteArrayList curr_topic_array : topic_subArrays_Map.values()){
+        for(CopyOnWriteArrayList curr_topic_array : topic_connectionId_Map.values()){
             curr_topic_array.remove(id);                            // removing the user (id) from each topic list
         }
         active_user_id_map.get(id).removeAllTopics();               // REMOVES ALL topics from the user -> USER        //TODO: may be deleted
@@ -116,4 +136,33 @@ public class UsersControl {
         //------------------- end edit 4/1 --------------------------
     }
 
+    /**
+     * @param connectionId
+     * @return USER by connection id
+     */
+    public User getUserByConnectionId(Integer connectionId){
+        //------------------- start edit 4/1 ------------------------
+        return this.active_user_id_map.get(connectionId);
+        //------------------- end edit 4/1 --------------------------
+    }
+
+    /**
+     * @param globalSerialnumber
+     * @return USER by global id
+     */
+    public User getUserByGlobalSerialnumber(Integer globalSerialnumber){
+        //------------------- start edit 4/1 ------------------------
+        return this.all_user_array.get(globalSerialnumber);
+        //------------------- end edit 4/1 --------------------------
+    }
+
+    /**
+     * @param topic
+     * @return a list of all the connectionsId which are subscribed to this topic
+     */
+    public CopyOnWriteArrayList<Integer> getTopicList (String topic){
+        //------------------- start edit 7/1 ------------------------
+        return topic_connectionId_Map.get(topic);
+        //------------------- end edit 7/1 --------------------------
+    }
 }
