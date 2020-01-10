@@ -8,12 +8,14 @@ public class BookStatusSent implements Message {
     //------------------- start edit 7/1 ------------------------
     private String destination_topic;
     private String bookList;            //book list will be book names separated by ','
+    private String original_msg;
     //------------------- end edit 7/1 --------------------------
 
-    public BookStatusSent (String destination_topic, String bookList){
+    public BookStatusSent (String destination_topic, String bookList, String original_msg){
         //------------------- start edit 7/1 ------------------------
         this.destination_topic = destination_topic;
         this.bookList = bookList;
+        this.original_msg=original_msg;
         //------------------- end edit 7/1 --------------------------
     }
     @Override

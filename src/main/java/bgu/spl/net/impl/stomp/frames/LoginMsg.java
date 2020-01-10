@@ -5,17 +5,17 @@ import bgu.spl.net.impl.stomp.UsersControl;
 import bgu.spl.net.srv.Connections;
 
 /**
- * this object will be created when cleint sends "CNNECT"
+ * this object will be created when client sends "CONNECT"
  */
 public class LoginMsg implements Message {
     //------------------- start edit 7/1 ------------------------
     private String userName;
     private String userPassword;
-    private double accept_version;
+    private String accept_version;
     private String original_msg;
     //------------------- end edit 7/1 --------------------------
 
-    public LoginMsg(String userName, String userPassword,double accept_version, String original_msg) {
+    public LoginMsg(String userName, String userPassword,String accept_version, String original_msg) {
         //------------------- start edit 7/1 ------------------------
         this.userName=userName;
         this.userPassword=userPassword;
