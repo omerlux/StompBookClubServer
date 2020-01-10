@@ -8,15 +8,15 @@ public class SubscribeMsg implements Message {
     private String destination_topic;
     private Integer id_givenByUser;
     private String receipt;
-    private String original_msg;
+    private String orig_msg_from_client;
     //------------------- end edit 7/1 --------------------------
 
-    public SubscribeMsg(String destination_topic, Integer id_givenByUser, String receipt,String original_msg){
+    public SubscribeMsg(String destination_topic, Integer id_givenByUser, String receipt,String orig_msg_from_client){
         //------------------- start edit 7/1 ------------------------
         this.destination_topic=destination_topic;
         this.id_givenByUser=id_givenByUser;
         this.receipt=receipt;
-        this.original_msg=original_msg;
+        this.orig_msg_from_client=orig_msg_from_client;
         //------------------- end edit 7/1 --------------------------
     }
 
@@ -30,6 +30,6 @@ public class SubscribeMsg implements Message {
 
     @Override
     public String getMessageData() {
-        return original_msg;
+        return null;
     }
 }

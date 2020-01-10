@@ -6,13 +6,13 @@ import bgu.spl.net.srv.Connections;
 public class LogoutMsg implements Message {
     //------------------- start edit 7/1 ------------------------
     private String reciept;
-    private String original_msg;
+    private String orig_msg_from_client;
     //------------------- end edit 7/1 --------------------------
 
-    public LogoutMsg (String reciept, String original_msg){
+    public LogoutMsg (String reciept, String orig_msg_from_client){
         //------------------- start edit 7/1 ------------------------
         this.reciept = reciept;
-        this.original_msg=original_msg;
+        this.orig_msg_from_client=orig_msg_from_client;
         //------------------- end edit 7/1 --------------------------
     }
 
@@ -27,6 +27,6 @@ public class LogoutMsg implements Message {
 
     @Override
     public String getMessageData() {
-        return original_msg;
+        return null;
     }
 }

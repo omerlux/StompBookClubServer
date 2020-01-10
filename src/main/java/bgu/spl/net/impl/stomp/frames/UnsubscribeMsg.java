@@ -7,14 +7,14 @@ public class UnsubscribeMsg implements Message {
     //------------------- start edit 7/1 ------------------------
     private Integer id_givenByUser;
     private String receipt;
-    private String original_msg;
+    private String orig_msg_from_client;
     //------------------- end edit 7/1 --------------------------
 
-    public UnsubscribeMsg(Integer id_givenByUser, String receipt,String original_msg){
+    public UnsubscribeMsg(Integer id_givenByUser, String receipt,String orig_msg_from_client){
         //------------------- start edit 7/1 ------------------------
         this.id_givenByUser=id_givenByUser;
         this.receipt=receipt;
-        this.original_msg=original_msg;
+        this.orig_msg_from_client=orig_msg_from_client;
         //------------------- end edit 7/1 --------------------------
     }
 
@@ -26,6 +26,6 @@ public class UnsubscribeMsg implements Message {
 
     @Override
     public String getMessageData() {
-        return original_msg;
+        return null;
     }
 }

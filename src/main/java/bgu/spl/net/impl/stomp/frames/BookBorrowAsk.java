@@ -8,14 +8,14 @@ public class BookBorrowAsk implements Message {
     //------------------- start edit 7/1 ------------------------
     private String destination_topic;
     private String bookname;
-    private String original_msg;
+    private String orig_msg_from_client;
     //------------------- end edit 7/1 --------------------------
 
-    public BookBorrowAsk(String destination_topic, String bookname, String original_msg){
+    public BookBorrowAsk(String destination_topic, String bookname, String orig_msg_from_client){
         //------------------- start edit 7/1 ------------------------
         this.destination_topic=destination_topic;
         this.bookname=bookname;
-        this.original_msg=original_msg;
+        this.orig_msg_from_client=orig_msg_from_client;
         //------------------- end edit 7/1 --------------------------
     }
 
@@ -38,6 +38,6 @@ public class BookBorrowAsk implements Message {
 
     @Override
     public String getMessageData() {
-        return original_msg;
+        return null;
     }
 }

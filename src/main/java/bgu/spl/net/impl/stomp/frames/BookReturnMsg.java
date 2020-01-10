@@ -9,15 +9,15 @@ public class BookReturnMsg implements Message {
     private String destination_topic;
     private String bookname;
     private String book_loaner;
-    private String original_msg;
+    private String orig_msg_from_client;
     //------------------- end edit 7/1 --------------------------
 
-    public BookReturnMsg(String destination_topic, String bookname, String book_loaner, String original_msg){
+    public BookReturnMsg(String destination_topic, String bookname, String book_loaner, String orig_msg_from_client){
         //------------------- start edit 7/1 ------------------------
         this.destination_topic = destination_topic;
         this.bookname = bookname;
         this.book_loaner = book_loaner;
-        this.original_msg=original_msg;
+        this.orig_msg_from_client=orig_msg_from_client;
         //------------------- end edit 7/1 --------------------------
     }
     @Override
@@ -39,6 +39,6 @@ public class BookReturnMsg implements Message {
 
     @Override
     public String getMessageData() {
-        return original_msg;
+        return null;
     }
 }
