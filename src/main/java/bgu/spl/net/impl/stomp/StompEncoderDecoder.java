@@ -44,7 +44,7 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
     @Override
     public byte[] encode(Object message) {
         //------------------- start edit 7/1 ------------------------
-        String msg = (String)message;
+        String msg = ((Message)message).getMessageData();   // this message is Message for sure
         return msg.getBytes();
         //------------------- end edit 7/1 --------------------------
     }
@@ -58,7 +58,6 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
         if (len >= bytes.length) {
             bytes = Arrays.copyOf(bytes, len * 2);
         }
-
         bytes[len++] = nextByte;
         //------------------- end edit 7/1 --------------------------
     }
@@ -71,6 +70,7 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
         //------------------- start edit 10/1 ------------------------
         //notice that we explicitly requesting that the string will be decoded from UTF-8
         //this is not actually required as it is the default encoding in java.
+        //We want to return a message object, so we will check what kind of message we received and create the right message object
         Message result = null;
         String resultStr = new String(bytes, 0, len, StandardCharsets.UTF_8);
         len = 0;

@@ -8,14 +8,14 @@ public class BookAddMsg implements Message {
     //------------------- start edit 7/1 ------------------------
     private String destination_topic;
     private String book_name;
-    private String original_msg;
+    private String orig_msg_from_client;
     //------------------- end edit 7/1 --------------------------
 
-    public BookAddMsg(String destination_topic, String book_name, String original_msg) {
+    public BookAddMsg(String destination_topic, String book_name, String orig_msg_from_client) {
         //------------------- start edit 7/1 ------------------------
         this.destination_topic=destination_topic;
         this.book_name=book_name;
-        this.original_msg=original_msg;
+        this.orig_msg_from_client=orig_msg_from_client;
         //------------------- end edit 7/1 --------------------------
     }
 

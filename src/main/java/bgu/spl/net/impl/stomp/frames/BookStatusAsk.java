@@ -7,13 +7,13 @@ import bgu.spl.net.srv.Connections;
 public class BookStatusAsk implements Message {
     //------------------- start edit 7/1 ------------------------
     private String destination_topic;
-    private String original_msg;
+    private String orig_msg_from_client;
     //------------------- end edit 7/1 --------------------------
 
-    public BookStatusAsk(String destination_topic, String original_msg){
+    public BookStatusAsk(String destination_topic, String orig_msg_from_client){
         //------------------- start edit 7/1 ------------------------
         this.destination_topic = destination_topic;
-        this.original_msg=original_msg;
+        this.orig_msg_from_client=orig_msg_from_client;
         //------------------- end edit 7/1 --------------------------
     }
 

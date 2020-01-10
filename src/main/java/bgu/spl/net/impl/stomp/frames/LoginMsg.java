@@ -12,15 +12,15 @@ public class LoginMsg implements Message {
     private String userName;
     private String userPassword;
     private String accept_version;
-    private String original_msg;
+    private String orig_msg_from_client;
     //------------------- end edit 7/1 --------------------------
 
-    public LoginMsg(String userName, String userPassword,String accept_version, String original_msg) {
+    public LoginMsg(String userName, String userPassword,String accept_version, String orig_msg_from_client) {
         //------------------- start edit 7/1 ------------------------
         this.userName=userName;
         this.userPassword=userPassword;
         this.accept_version=accept_version;
-        this.original_msg=original_msg;
+        this.orig_msg_from_client=orig_msg_from_client;
         //------------------- end edit 7/1 --------------------------
     }
 
@@ -53,7 +53,7 @@ public class LoginMsg implements Message {
     @Override
     public String getMessageData() {
         //------------------- start edit 7/1 ------------------------
-        return original_msg;
+        return orig_msg_from_client;        // THIS IS AN OLD MESSAGE FROM CLIENT. NOT THIS MESSAGE ITSELF
         //------------------- end edit 7/1 --------------------------
     }
 }
