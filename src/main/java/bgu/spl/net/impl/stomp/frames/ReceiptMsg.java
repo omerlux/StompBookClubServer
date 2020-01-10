@@ -5,11 +5,13 @@ import bgu.spl.net.srv.Connections;
 public class ReceiptMsg implements Message {
     //------------------- start edit 7/1 ------------------------
     private String receipt_id;
+    private boolean disconnectMsg;
     //------------------- end edit 7/1 --------------------------
 
-    public ReceiptMsg(String receipt_id){
+    public ReceiptMsg(String receipt_id, boolean disconnectMsg){
         //------------------- start edit 7/1 ------------------------
         this.receipt_id = receipt_id;
+        this.disconnectMsg = disconnectMsg;
         //------------------- end edit 7/1 --------------------------
     }
     @Override
@@ -22,5 +24,11 @@ public class ReceiptMsg implements Message {
         return("RECEIPT\n" +
                 "receipt-id: "+receipt_id+"\n\n"+
                 "^@");
+    }
+
+    public boolean getDisconnectMsg(){
+        //------------------- start edit 10/1 ------------------------
+        return disconnectMsg;
+        //------------------- end edit 10/1 --------------------------
     }
 }

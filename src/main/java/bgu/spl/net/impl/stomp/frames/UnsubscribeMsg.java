@@ -21,7 +21,7 @@ public class UnsubscribeMsg implements Message {
     @Override
     public void process(int connectionID, Connections connections) {
         UsersControl.getInstance().exitGenre(connectionID,id_givenByUser);  //will remove the user from the genre (called by id)
-        connections.send(connectionID, new ReceiptMsg(receipt));            //sending a receipt back to the client
+        connections.send(connectionID, new ReceiptMsg(receipt,false));            //sending a receipt back to the client
     }
 
     @Override
