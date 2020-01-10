@@ -34,7 +34,6 @@ public class ObjectEncoderDecoder implements MessageEncoderDecoder<Serializable>
                 return result;
             }
         }
-
         return null;
     }
 
@@ -50,7 +49,6 @@ public class ObjectEncoderDecoder implements MessageEncoderDecoder<Serializable>
         } catch (Exception ex) {
             throw new IllegalArgumentException("cannot desrialize object", ex);
         }
-
     }
 
     private byte[] serializeObject(Serializable message) {
@@ -75,5 +73,4 @@ public class ObjectEncoderDecoder implements MessageEncoderDecoder<Serializable>
             throw new IllegalArgumentException("cannot serialize object", ex);
         }
     }
-
 }

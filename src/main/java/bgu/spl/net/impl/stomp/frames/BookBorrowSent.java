@@ -9,13 +9,15 @@ public class BookBorrowSent implements Message {
     private String destination_topic;
     private String bookname;
     private String book_giver;
+    private String original_msg;
     //------------------- end edit 7/1 --------------------------
 
-    public BookBorrowSent (String destination_topic, String bookname, String book_giver){
+    public BookBorrowSent (String destination_topic, String bookname, String book_giver, String original_msg){
         //------------------- start edit 7/1 ------------------------
         this.destination_topic=destination_topic;
         this.bookname=bookname;
         this.book_giver=book_giver;
+        this.original_msg = original_msg;
         //------------------- end edit 7/1 --------------------------
     }
 
@@ -38,6 +40,6 @@ public class BookBorrowSent implements Message {
 
     @Override
     public String getMessageData() {
-        return null;
+        return original_msg;
     }
 }
