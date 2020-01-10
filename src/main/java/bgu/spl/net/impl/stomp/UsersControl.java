@@ -55,17 +55,19 @@ public class UsersControl {
                         return "logged on";
                     else {
                         if (u.getPassword().equals(userPassword)) {                      //User name + password are correct
-                            active_user_id_map.put(connectionId, u);                      //adding curr user & id to the map
+                            active_user_id_map.put(connectionId, u);                     //adding curr user & id to the map
+                            u.setConnected_successfully(true);                           /**setting the connected_successfully to true - 10/1 **/
                             return "connected";
                         } else
-                            return "wrong pass";                               //Password is incorrect
+                            return "wrong pass";                                //Password is incorrect
                     }
                 }
             }
-            int tmp_count = userCounter.incrementAndGet();                     //inc the counter of users
-            User newUsr = new User(userName, userPassword, tmp_count);           //Create new user
+            int tmp_count = userCounter.incrementAndGet();                      //inc the counter of users
+            User newUsr = new User(userName, userPassword, tmp_count);          //Create new user
             all_user_array.add(tmp_count, newUsr);                              //adding new user to the general user array, in the specified index
             active_user_id_map.put(connectionId, newUsr);                       //adding new user & connectionId to the ActiveUserMap
+            newUsr.setConnected_successfully(true);                             /**setting the connected_successfully to true - 10/1 **/
             return "connected";
         }
         //------------------- end edit 4/1 --------------------------
@@ -120,12 +122,13 @@ public class UsersControl {
      * @param connectionID
      * @return
      */
-    public boolean logoutTopicReset (Integer connectionID){                   // Integer - for removing Object, NOT index
+    public boolean logout_TopicReset_ConnectionSuccessfullyFalse (Integer connectionID){                   // Integer - for removing Object, NOT index
         //------------------- start edit 4/1 ------------------------
         for(CopyOnWriteArrayList curr_topic_array : topic_connectionId_Map.values()){
-            curr_topic_array.remove(connectionID);                            // removing the user (id) from each topic list
+            curr_topic_array.remove(connectionID);                              // removing the user (id) from each topic list
         }
-        active_user_id_map.get(connectionID).removeAllTopics();               // REMOVES ALL topics from the user -> USER
+        active_user_id_map.get(connectionID).removeAllTopics();                 // REMOVES ALL topics from the user ->
+        active_user_id_map.get(connectionID).setConnected_successfully(false);  /**setting the connected_successfully to true - 10/1 **/
         return true;    //TODO: maybe a void function is enough
         //------------------- end edit 4/1 --------------------------
     }

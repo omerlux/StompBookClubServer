@@ -1,6 +1,7 @@
 package bgu.spl.net.impl.stomp.frames;
 
 import bgu.spl.net.impl.stomp.StompMessagingProtocolImpl;
+import bgu.spl.net.impl.stomp.User;
 import bgu.spl.net.impl.stomp.UsersControl;
 import bgu.spl.net.srv.Connections;
 
@@ -32,9 +33,9 @@ public class BookBorrowFound implements Message {
                         "Message-id:" + StompMessagingProtocolImpl.getNewMessageId() + "\n" +
                         "destination:" + destination_topic + "\n\n" +
 
-                        potential_giver+" has "+bookname+"\n"+
+                        potential_giver + " has " + bookname + "\n" +
+                        "^@"));                     // sending a message: potential_giver has the
 
-                        "^@"));                     // sending a message: potential_giver has the book
         //------------------- end edit 7/1 --------------------------
     }
 

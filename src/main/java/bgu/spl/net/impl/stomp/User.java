@@ -14,6 +14,7 @@ public class User {
     private String password;                                        // user password
     private int user_serialnumber;                                       // user connection id which used in the ConnectionImpl
     private HashMap<Integer, String> topic_id_map;                       // user lists of topics by id given by the user
+    private boolean connected_successfully =false;                   /** for wrong password case -10/1 **/
     //------------------- end edit 7/1 --------------------------
 
     public User(String name, String password, int user_serialnumber) {
@@ -101,6 +102,20 @@ public class User {
         //------------------- end edit 4/1 --------------------------
     }
 
+    /** Sets connected_successfully **/
+    public void setConnected_successfully(boolean setter){
+        //------------------- start edit 10/1 ------------------------
+        connected_successfully=setter;
+        //------------------- end edit 10/1 --------------------------
+    }
+
+    /** Gets connected_successfully**/
+    public boolean getConnected_successfully(){
+        //------------------- start edit 10/1 ------------------------
+        return connected_successfully;
+        //------------------- end edit 10/1 --------------------------
+
+    }
 
 
 
