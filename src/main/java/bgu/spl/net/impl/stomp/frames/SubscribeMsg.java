@@ -24,7 +24,7 @@ public class SubscribeMsg implements Message {
     public void process(int connectionID, Connections connections) {
         //------------------- start edit 7/1 ------------------------
         UsersControl.getInstance().joinGenre(connectionID,destination_topic,id_givenByUser);
-        connections.send(connectionID,new ReceiptMsg(receipt));
+        connections.send(connectionID,new ReceiptMsg(receipt,false));
         //------------------- end edit 7/1 --------------------------
     }
 

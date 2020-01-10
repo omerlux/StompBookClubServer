@@ -2,6 +2,8 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.impl.stomp.StompMessagingProtocolImpl;
+import bgu.spl.net.impl.stomp.frames.ReceiptMsg;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -50,7 +52,8 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
                         T nextMessage = encdec.decodeNextByte(buf.get());
                         if (nextMessage != null) {
                             T response = protocol.process(nextMessage);
-                            if (response != null) {
+                            if (response != null) { /** Won't happen - our process is a void function**/
+                                /** This 2 lines will be in send function**/
                                 writeQueue.add(ByteBuffer.wrap(encdec.encode(response)));
                                 reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
                             }
@@ -122,6 +125,12 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
      * should be used by the send commands in the connections implementations
      */
     public void send(T msg) {
-        //TODO: IMPLEMENT IF NEEDED
+        //------------------- start edit 10/1 ------------------------
+        writeQueue.add(ByteBuffer.wrap(encdec.encode(msg)));                                    // adding the msg to write queue
+        reactor.updateInterestedOps(chan,SelectionKey.OP_READ | SelectionKey.OP_WRITE);    // changing from R -> R/W
+        if (msg instanceof ReceiptMsg)
+            if (((ReceiptMsg) msg).getDisconnectMsg())
+                ((StompMessagingProtocolImpl)protocol).terminate(); //termination for run() function
+        //------------------- end edit 10/1 --------------------------
     }
 }

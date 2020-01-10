@@ -2,6 +2,9 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.impl.stomp.StompMessagingProtocolImpl;
+import bgu.spl.net.impl.stomp.frames.ReceiptMsg;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -59,6 +62,16 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
      * should be used by the send commands in the connections implementations
      */
     public void send(T msg) {
-        //TODO: IMPLEMENT IF NEEDED
+        //------------------- start edit 10/1 ------------------------
+        try {
+            out.write(encdec.encode(msg));      //writing string to stream
+            out.flush();                        //sending the msg
+            if (msg instanceof ReceiptMsg)
+                if (((ReceiptMsg) msg).getDisconnectMsg())
+                    ((StompMessagingProtocolImpl)protocol).terminate(); //termination for run() function
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //------------------- end edit 10/1 --------------------------
     }
 }

@@ -20,7 +20,7 @@ public class LogoutMsg implements Message {
     public void process(int connectionID, Connections connections) {
         //------------------- start edit 7/1 ------------------------
         UsersControl.getInstance().logoutTopicReset(connectionID);      //Remove user from all topic
-        connections.send(connectionID, new ReceiptMsg(reciept));        //Send receipt to client
+        connections.send(connectionID, new ReceiptMsg(reciept,true));        //Send receipt to client
         connections.disconnect(connectionID);                           //Disconnect from connections
         //------------------- end edit 7/1 --------------------------
     }
