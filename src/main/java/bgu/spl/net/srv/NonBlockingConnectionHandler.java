@@ -3,6 +3,7 @@ package bgu.spl.net.srv;
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocol;
+import bgu.spl.net.impl.stomp.ConnectionsImpl;
 import bgu.spl.net.impl.stomp.StompMessagingProtocolImpl;
 import bgu.spl.net.impl.stomp.frames.Message;
 import bgu.spl.net.impl.stomp.frames.ReceiptMsg;
@@ -25,15 +26,18 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     private final SocketChannel chan;
     private final Reactor reactor;
 
+
     public NonBlockingConnectionHandler(
             MessageEncoderDecoder<T> reader,
             StompMessagingProtocol protocol,        //change to StompMessagingProtocol 10/1
             SocketChannel chan,
-            Reactor reactor) {
+            Reactor reactor,
+            Connections connections) {
         this.chan = chan;
         this.encdec = reader;
         this.protocol = protocol;
         this.reactor = reactor;
+        this.protocol.start(((ConnectionsImpl)connections).getIdCount(),connections);
     }
 
     public Runnable continueRead() {
@@ -72,7 +76,6 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
             close();
             return null;
         }
-
     }
 
     public void close() {

@@ -104,16 +104,17 @@ public class Reactor<T> implements Server<T> {
 
 
     private void handleAccept(ServerSocketChannel serverChan, Selector selector) throws IOException {
+        //------------------- start edit 10/1 ------------------------
         SocketChannel clientChan = serverChan.accept();
         clientChan.configureBlocking(false);
         final NonBlockingConnectionHandler<T> handler = new NonBlockingConnectionHandler<>(
                 readerFactory.get(),
                 protocolFactory.get(),
                 clientChan,
-                this);
-        //------------------- start edit 4/1 ------------------------
+                this,
+                connections);
         connections.connect(handler);
-        //------------------- end edit 4/1 --------------------------
+        //------------------- end edit 10/1 --------------------------
         clientChan.register(selector, SelectionKey.OP_READ, handler);
     }
 

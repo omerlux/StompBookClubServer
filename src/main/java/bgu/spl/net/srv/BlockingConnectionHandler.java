@@ -3,6 +3,7 @@ package bgu.spl.net.srv;
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocol;
+import bgu.spl.net.impl.stomp.ConnectionsImpl;
 import bgu.spl.net.impl.stomp.StompMessagingProtocolImpl;
 import bgu.spl.net.impl.stomp.frames.Message;
 import bgu.spl.net.impl.stomp.frames.ReceiptMsg;
@@ -21,10 +22,14 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     private BufferedOutputStream out;
     private volatile boolean connected = true;
 
-    public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, StompMessagingProtocol protocol) {   //change to StompMessagingProtocol 10/1
+
+    public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, StompMessagingProtocol protocol, Connections connections) {         //change to StompMessagingProtocol 10/1
+        //------------------- start edit 10/1 ------------------------
         this.sock = sock;
         this.encdec = reader;
         this.protocol = protocol;
+        this.protocol.start(((ConnectionsImpl)connections).getIdCount(),connections);
+        //------------------- start edit 10/1 ------------------------
     }
 
     @Override
@@ -52,7 +57,6 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
     }
 
     @Override
