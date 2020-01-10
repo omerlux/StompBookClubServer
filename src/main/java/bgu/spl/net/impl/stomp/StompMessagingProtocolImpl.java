@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.stomp;
 
+import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.impl.stomp.frames.Message;
 import bgu.spl.net.srv.Connections;
@@ -14,6 +15,9 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     private ConnectionsImpl<Message> connections;
     private static AtomicInteger messageCounter=new AtomicInteger(0);
     //------------------- end edit 4/1 --------------------------
+
+    public StompMessagingProtocolImpl(){
+    }
 
     /**
      * Used to initiate the current client protocol with it's personal connection ID and the connections implementation

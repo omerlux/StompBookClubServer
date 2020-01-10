@@ -2,7 +2,10 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.StompMessagingProtocol;
+import bgu.spl.net.impl.stomp.ConnectionsImpl;
 import bgu.spl.net.impl.stomp.StompMessagingProtocolImpl;
+import bgu.spl.net.impl.stomp.frames.Message;
 import bgu.spl.net.impl.stomp.frames.ReceiptMsg;
 
 import java.io.IOException;
@@ -17,21 +20,24 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     private static final int BUFFER_ALLOCATION_SIZE = 1 << 13; //8k
     private static final ConcurrentLinkedQueue<ByteBuffer> BUFFER_POOL = new ConcurrentLinkedQueue<>();
 
-    private final MessagingProtocol<T> protocol;
+    private final StompMessagingProtocol protocol;      //change to StompMessagingProtocol 10/1
     private final MessageEncoderDecoder<T> encdec;
     private final Queue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
     private final SocketChannel chan;
     private final Reactor reactor;
 
+
     public NonBlockingConnectionHandler(
             MessageEncoderDecoder<T> reader,
-            MessagingProtocol<T> protocol,
+            StompMessagingProtocol protocol,        //change to StompMessagingProtocol 10/1
             SocketChannel chan,
-            Reactor reactor) {
+            Reactor reactor,
+            Connections connections) {
         this.chan = chan;
         this.encdec = reader;
         this.protocol = protocol;
         this.reactor = reactor;
+        this.protocol.start(((ConnectionsImpl)connections).getIdCount(),connections);
     }
 
     public Runnable continueRead() {
@@ -51,12 +57,14 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
                     while (buf.hasRemaining()) {
                         T nextMessage = encdec.decodeNextByte(buf.get());
                         if (nextMessage != null) {
+                            protocol.process((Message)nextMessage);
+                            /**                         //Won't happen - our process is a void function
                             T response = protocol.process(nextMessage);
-                            if (response != null) { /** Won't happen - our process is a void function**/
-                                /** This 2 lines will be in send function**/
+                            if (response != null) {  Won't happen - our process is a void function
                                 writeQueue.add(ByteBuffer.wrap(encdec.encode(response)));
                                 reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
                             }
+                            **/
                         }
                     }
                 } finally {
@@ -68,7 +76,6 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
             close();
             return null;
         }
-
     }
 
     public void close() {

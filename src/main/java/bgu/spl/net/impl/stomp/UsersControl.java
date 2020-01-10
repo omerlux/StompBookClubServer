@@ -1,12 +1,5 @@
 package bgu.spl.net.impl.stomp;
 
-import bgu.spl.net.srv.ConnectionHandler;
-import bgu.spl.net.srv.Connections;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,25 +48,26 @@ public class UsersControl {
      */
     public String login(int connectionId, String userName, String userPassword){
         //------------------- start edit 4/1 ------------------------
-        for (User u: all_user_array) {
-            if (u.getName().equals(userName)){  // found the name of the user
-                if (connections.getActiveClientMap().containsKey(connectionId))      //User is already logged on
-                    return "logged on";
-                else {
-                    if (u.getPassword().equals(userPassword)) {                      //User name + password are correct
-                        active_user_id_map.put(connectionId,u);                      //adding curr user & id to the map
-                        return "connected";
+        synchronized (all_user_array) {         // sync all users, because 2 may create the same username
+            for (User u : all_user_array) {
+                if (u.getName().equals(userName)) {  // found the name of the user
+                    if (connections.getActiveClientMap().containsKey(connectionId))      //User is already logged on
+                        return "logged on";
+                    else {
+                        if (u.getPassword().equals(userPassword)) {                      //User name + password are correct
+                            active_user_id_map.put(connectionId, u);                      //adding curr user & id to the map
+                            return "connected";
+                        } else
+                            return "wrong pass";                               //Password is incorrect
                     }
-                    else
-                        return "wrong pass";                               //Password is incorrect
                 }
             }
+            int tmp_count = userCounter.incrementAndGet();                     //inc the counter of users
+            User newUsr = new User(userName, userPassword, tmp_count);           //Create new user
+            all_user_array.add(tmp_count, newUsr);                              //adding new user to the general user array, in the specified index
+            active_user_id_map.put(connectionId, newUsr);                       //adding new user & connectionId to the ActiveUserMap
+            return "connected";
         }
-        int tmp_count = userCounter.incrementAndGet();                     //inc the counter of users
-        User newUsr = new User(userName,userPassword,tmp_count);           //Create new user
-        all_user_array.add(tmp_count,newUsr);                              //adding new user to the general user array, in the specified index
-        active_user_id_map.put(connectionId,newUsr);                       //adding new user & connectionId to the ActiveUserMap
-        return "connected";
         //------------------- end edit 4/1 --------------------------
     }
 
@@ -90,11 +84,10 @@ public class UsersControl {
         tmp_array.add(connectionId);
         if(topic_connectionId_Map.putIfAbsent(topic, tmp_array) != null){        //PutIfAbsent returns null if there is no topic
             // that topic exists in the topic_map
-            if(!topic_connectionId_Map.get(topic).contains(connectionId)) {            //checks if already contains id
+            if (!topic_connectionId_Map.get(topic).contains(connectionId)) {            //checks if already contains id
                 topic_connectionId_Map.get(topic).add(connectionId);                   // ADDING client id to the topic
-                active_user_id_map.get(connectionId).addTopic(topic,topic_idByUser);   // ADDING topic_id by user to user-> USER
-            }
-            else
+                active_user_id_map.get(connectionId).addTopic(topic, topic_idByUser);   // ADDING topic_id by user to user-> USER
+            } else
                 return false; //this user has already subscribed to this topic
         }
         return true; // subscribed success
@@ -112,7 +105,7 @@ public class UsersControl {
         String topic = active_user_id_map.get(connectionId).getTopic_id_map().get(topic_idByUser);
         if(topic!=null){        //The user has this topic in his subscription list
             topic_connectionId_Map.get(topic).remove(connectionId);                      // REMOVES the user (id) from the topic array
-            active_user_id_map.get(connectionId).removeTopic(topic_idByUser);      // REMOVES the topic from the user -> USER        //TODO: may be deleted
+            active_user_id_map.get(connectionId).removeTopic(topic_idByUser);      // REMOVES the topic from the user -> USER
             return true;
         }
         return false;
@@ -132,7 +125,7 @@ public class UsersControl {
         for(CopyOnWriteArrayList curr_topic_array : topic_connectionId_Map.values()){
             curr_topic_array.remove(connectionID);                            // removing the user (id) from each topic list
         }
-        active_user_id_map.get(connectionID).removeAllTopics();               // REMOVES ALL topics from the user -> USER        //TODO: may be deleted
+        active_user_id_map.get(connectionID).removeAllTopics();               // REMOVES ALL topics from the user -> USER
         return true;    //TODO: maybe a void function is enough
         //------------------- end edit 4/1 --------------------------
     }

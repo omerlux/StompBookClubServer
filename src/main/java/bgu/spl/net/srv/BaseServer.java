@@ -2,6 +2,7 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.impl.stomp.ConnectionsImpl;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.util.function.Supplier;
 public abstract class BaseServer<T> implements Server<T> {
 
     private final int port;
-    private final Supplier<MessagingProtocol<T>> protocolFactory;
+    private final Supplier<StompMessagingProtocol> protocolFactory;     //change to StompMessagingProtocol 10/1
     private final Supplier<MessageEncoderDecoder<T>> encdecFactory;
     private ServerSocket sock;
     //------------------- start edit 4/1 ------------------------
@@ -21,7 +22,7 @@ public abstract class BaseServer<T> implements Server<T> {
 
     public BaseServer(
             int port,
-            Supplier<MessagingProtocol<T>> protocolFactory,
+            Supplier<StompMessagingProtocol> protocolFactory,       //change to StompMessagingProtocol 10/1
             Supplier<MessageEncoderDecoder<T>> encdecFactory) {
 
         this.port = port;
@@ -44,14 +45,14 @@ public abstract class BaseServer<T> implements Server<T> {
             while (!Thread.currentThread().isInterrupted()) {
 
                 Socket clientSock = serverSock.accept();
-
+                //------------------- start edit 10/1 ------------------------
                 BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<>(
                         clientSock,
                         encdecFactory.get(),
-                        protocolFactory.get());
-                //------------------- start edit 4/1 ------------------------
+                        protocolFactory.get(),
+                        connections);
                 connections.connect(handler);
-                //------------------- end edit 4/1 --------------------------
+                //------------------- end edit 10/1 --------------------------
                 execute(handler);
             }
         } catch (IOException ex) {
