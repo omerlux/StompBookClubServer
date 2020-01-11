@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.stomp.frames;
 
+import bgu.spl.net.Pair;
 import bgu.spl.net.impl.stomp.StompMessagingProtocolImpl;
 import bgu.spl.net.impl.stomp.User;
 import bgu.spl.net.impl.stomp.UsersControl;
@@ -27,6 +28,7 @@ public class BookBorrowFound implements Message {
         //------------------- start edit 7/1 ------------------------
         Integer userTopicSubNumber = UsersControl.getInstance().getUserByConnectionId(connectionID).get_SubNum_by_TopicName(destination_topic);
         String userName = UsersControl.getInstance().getUserByConnectionId(connectionID).getName();
+
         connections.send(destination_topic, new AcknowledgeMsg(
                 "MESSAGE\n" +
                         "subscription:" + userTopicSubNumber + "\n" +

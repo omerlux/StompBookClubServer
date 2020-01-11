@@ -40,7 +40,10 @@ public class LoginMsg implements Message {
             case "logged on" : {
                 connections.send(connectionID, new ErrorMsg("","User already logged in",
                         getMessageData(),"User already logged in."));
-
+            }
+            case "logged on with another username" :{
+                connections.send(connectionID, new ErrorMsg("","Already logged on with another user.",
+                        getMessageData(),"Some user is already logged in from this client."));
             }
             case "wrong pass" : {
                 connections.send(connectionID, new ErrorMsg("","Wrong paswword",

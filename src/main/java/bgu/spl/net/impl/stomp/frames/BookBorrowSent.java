@@ -27,6 +27,9 @@ public class BookBorrowSent implements Message {
         //------------------- start edit 7/1 ------------------------
         Integer userTopicSubNumber = UsersControl.getInstance().getUserByConnectionId(connectionID).get_SubNum_by_TopicName(destination_topic);
         String userName = UsersControl.getInstance().getUserByConnectionId(connectionID).getName();
+
+        /** In here, we assumpt that only the 1 user wanted that specific book, so only him will write "Taking BOOK from USER" **/
+
         connections.send(destination_topic, new AcknowledgeMsg(
                 "MESSAGE\n" +
                         "subscription:" + userTopicSubNumber + "\n" +
