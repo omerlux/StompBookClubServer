@@ -93,10 +93,10 @@ public class ConnectionsImpl<T> implements Connections<T> {
      *  adding the {@param connectionHandler} to the map
      *  LOCKING writing to the connection map @active_clients_map
      */
-    public void connect(ConnectionHandler<T> newConnectionHandler){
+    public void connect(ConnectionHandler<T> newConnectionHandler, int connectionId){
         //------------------- start edit 4/1 ------------------------
         readWriteLock.writeLock().lock();               //locking writing
-        active_client_map.putIfAbsent(id_count.getAndIncrement(),newConnectionHandler);
+        active_client_map.putIfAbsent(connectionId,newConnectionHandler);
         readWriteLock.writeLock().unlock();             //unlocking writing
         //------------------- end edit 4/1 --------------------------
     }
@@ -104,8 +104,8 @@ public class ConnectionsImpl<T> implements Connections<T> {
     /**
      * A function to return the current id_count
      */
-    public int getIdCount(){
-        return id_count.get();
+    public int incAndGetIdCount(){
+        return id_count.incrementAndGet();
     }
 
     /**

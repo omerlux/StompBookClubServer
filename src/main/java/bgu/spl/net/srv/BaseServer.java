@@ -45,14 +45,16 @@ public abstract class BaseServer<T> implements Server<T> {
             while (!Thread.currentThread().isInterrupted()) {
 
                 Socket clientSock = serverSock.accept();
-                //------------------- start edit 10/1 ------------------------
+                //------------------- start edit 11/1 ------------------------
+                int connectionId = connections.incAndGetIdCount();
                 BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<>(
                         clientSock,
                         encdecFactory.get(),
                         protocolFactory.get(),
-                        connections);
-                connections.connect(handler);
-                //------------------- end edit 10/1 --------------------------
+                        connections,
+                        connectionId);
+                connections.connect(handler, connectionId);
+                //------------------- end edit 11/1 --------------------------
                 execute(handler);
             }
         } catch (IOException ex) {

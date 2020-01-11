@@ -107,13 +107,16 @@ public class Reactor<T> implements Server<T> {
         //------------------- start edit 10/1 ------------------------
         SocketChannel clientChan = serverChan.accept();
         clientChan.configureBlocking(false);
+
+        int connectionId = connections.incAndGetIdCount();
         final NonBlockingConnectionHandler<T> handler = new NonBlockingConnectionHandler<>(
                 readerFactory.get(),
                 protocolFactory.get(),
                 clientChan,
                 this,
-                connections);
-        connections.connect(handler);
+                connections,
+                connectionId);
+        connections.connect(handler,connectionId);
         //------------------- end edit 10/1 --------------------------
         clientChan.register(selector, SelectionKey.OP_READ, handler);
     }
