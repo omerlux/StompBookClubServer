@@ -34,7 +34,7 @@ public class BookReturnMsg implements Message {
             String userName = UsersControl.getInstance().getUserByConnectionId(connectionID).getName();
             connections.send(destination_topic, new AcknowledgeMsg(
                     "MESSAGE\n" +
-                            "subscription:" + userTopicSubNumber + "\n" +
+                            "subscription:" + userTopicSubNumber + "\n" +                               // the userTopicSubNumber will be changed for other connections
                             "Message-id:" + StompMessagingProtocolImpl.getNewMessageId() + "\n" +
                             "destination:" + destination_topic + "\n\n" +
 

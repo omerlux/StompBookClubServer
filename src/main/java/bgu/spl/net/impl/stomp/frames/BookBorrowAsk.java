@@ -35,7 +35,7 @@ public class BookBorrowAsk implements Message {
 
             connections.send(destination_topic, new AcknowledgeMsg(
                     "MESSAGE\n" +
-                            "subscription:" + userTopicSubNumber + "\n" +
+                            "subscription:" + userTopicSubNumber + "\n" +                               // the userTopicSubNumber will be changed for other connections
                             "Message-id:" + StompMessagingProtocolImpl.getNewMessageId() + "\n" +
                             "destination:" + destination_topic + "\n\n" +
 
