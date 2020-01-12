@@ -23,13 +23,13 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     private volatile boolean connected = true;
 
 
-    public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, StompMessagingProtocol protocol, Connections connections) {         //change to StompMessagingProtocol 10/1
-        //------------------- start edit 10/1 ------------------------
+    public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, StompMessagingProtocol protocol, Connections connections, int connectionId) {         //change to StompMessagingProtocol 10/1
+        //------------------- start edit 11/1 ------------------------
         this.sock = sock;
         this.encdec = reader;
         this.protocol = protocol;
-        this.protocol.start(((ConnectionsImpl)connections).getIdCount(),connections);
-        //------------------- start edit 10/1 ------------------------
+        this.protocol.start(connectionId,connections);
+        //------------------- start edit 11/1 ------------------------
     }
 
     @Override

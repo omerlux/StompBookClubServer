@@ -1,5 +1,7 @@
 package bgu.spl.net.impl.stomp;
 
+import bgu.spl.net.impl.stomp.frames.AcknowledgeMsg;
+import bgu.spl.net.impl.stomp.frames.Message;
 import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
 
@@ -59,15 +61,21 @@ public class ConnectionsImpl<T> implements Connections<T> {
      * Sends message T to client subscribed to that specific channel == topic.
      */
     public void send(String topic, T msg) {
-        //------------------- start edit 7/1 ------------------------
+        //------------------- start edit 11/1 ------------------------
         for(Integer curr_id : UsersControl.getInstance().getTopicList(topic)){
             readWriteLock.readLock().lock();                //TODO: should we lock here?
             if(active_client_map.containsKey(curr_id)){
+                String tmp_string = ((Message)msg).getMessageData();                                            //those few actions are to change the subscription id that we send to.
+                int index_dot = tmp_string.indexOf(":");
+                int index_n = tmp_string.indexOf("\n",index_dot);
+                ((AcknowledgeMsg)msg).changeMsgData(
+                        tmp_string.substring(0,index_dot+1) + curr_id + tmp_string.substring(index_n)
+                );
                 active_client_map.get(curr_id).send(msg);
             }
             readWriteLock.readLock().unlock();
         }
-        //------------------- end edit 7/1 --------------------------
+        //------------------- end edit 11/1 --------------------------
     }
 
     @Override
@@ -93,10 +101,10 @@ public class ConnectionsImpl<T> implements Connections<T> {
      *  adding the {@param connectionHandler} to the map
      *  LOCKING writing to the connection map @active_clients_map
      */
-    public void connect(ConnectionHandler<T> newConnectionHandler){
+    public void connect(ConnectionHandler<T> newConnectionHandler, int connectionId){
         //------------------- start edit 4/1 ------------------------
         readWriteLock.writeLock().lock();               //locking writing
-        active_client_map.putIfAbsent(id_count.getAndIncrement(),newConnectionHandler);
+        active_client_map.putIfAbsent(connectionId,newConnectionHandler);
         readWriteLock.writeLock().unlock();             //unlocking writing
         //------------------- end edit 4/1 --------------------------
     }
@@ -104,8 +112,8 @@ public class ConnectionsImpl<T> implements Connections<T> {
     /**
      * A function to return the current id_count
      */
-    public int getIdCount(){
-        return id_count.get();
+    public int incAndGetIdCount(){
+        return id_count.incrementAndGet();
     }
 
     /**

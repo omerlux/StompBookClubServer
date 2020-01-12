@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.stomp.frames;
 
+import bgu.spl.net.impl.stomp.User;
 import bgu.spl.net.impl.stomp.UsersControl;
 import bgu.spl.net.srv.Connections;
 
@@ -23,8 +24,15 @@ public class SubscribeMsg implements Message {
     @Override
     public void process(int connectionID, Connections connections) {
         //------------------- start edit 7/1 ------------------------
-        UsersControl.getInstance().joinGenre(connectionID,destination_topic,id_givenByUser);
-        connections.send(connectionID,new ReceiptMsg(receipt,false));
+        User curr_user = UsersControl.getInstance().getUserByConnectionId(connectionID);
+        if(!curr_user.getConnected_successfully()){
+            connections.send(connectionID, new ErrorMsg("","Didn't logged in",
+                    orig_msg_from_client,"The user isn't logged in yet."));
+        }
+        else {
+            UsersControl.getInstance().joinGenre(connectionID, destination_topic, id_givenByUser);
+            connections.send(connectionID, new ReceiptMsg(receipt, false));
+        }
         //------------------- end edit 7/1 --------------------------
     }
 

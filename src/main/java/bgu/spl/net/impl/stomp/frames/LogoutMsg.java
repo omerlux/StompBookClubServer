@@ -19,7 +19,7 @@ public class LogoutMsg implements Message {
     @Override
     public void process(int connectionID, Connections connections) {
         //------------------- start edit 7/1 ------------------------
-        UsersControl.getInstance().logoutTopicReset(connectionID);      //Remove user from all topic
+        UsersControl.getInstance().logout_TopicReset_ConnectionSuccessfullyFalse(connectionID);      //Remove user from all topic - changed in the 10/1
         connections.send(connectionID, new ReceiptMsg(reciept,true));        //Send receipt to client
         connections.disconnect(connectionID);                           //Disconnect from connections
         //------------------- end edit 7/1 --------------------------

@@ -1,6 +1,9 @@
 package bgu.spl.net.impl.stomp;
 
+import bgu.spl.net.Pair;
+
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -9,7 +12,7 @@ public class UsersControl {
      * The purpose of this class, is to manage the users database and its changes due to different commands
      * It's not connect directly to the server-client communication
      **/
-    //------------------- start edit 7/1 ------------------------
+    //------------------- start edit 11/1 ------------------------
     private CopyOnWriteArrayList<User> all_user_array;                                          // Global userId map
     private static AtomicInteger userCounter;                                                   // User counter, to track how many users are in the database
     private ConnectionsImpl connections;
@@ -18,16 +21,16 @@ public class UsersControl {
     private static class SingletonHolder{
         private static UsersControl UC_instance = new UsersControl();
     }
-    //------------------- end edit 7/1 --------------------------
+    //------------------- end edit 11/1 --------------------------
 
     public UsersControl(){
-        //------------------- start edit 4/1 ------------------------
+        //------------------- start edit 11/1 ------------------------
         all_user_array = new CopyOnWriteArrayList<>();
         active_user_id_map = new ConcurrentHashMap<>();
         connections = new ConnectionsImpl();
         topic_connectionId_Map = new ConcurrentHashMap<>();
         userCounter=new AtomicInteger(0);
-        //------------------- end edit 4/1 --------------------------
+        //------------------- end edit 11/1 --------------------------
     }
 
     public static UsersControl getInstance(){
@@ -49,23 +52,29 @@ public class UsersControl {
     public String login(int connectionId, String userName, String userPassword){
         //------------------- start edit 4/1 ------------------------
         synchronized (all_user_array) {         // sync all users, because 2 may create the same username
+            if(active_user_id_map.containsKey(connectionId) && active_user_id_map.get(connectionId).getName() != userName){         /** 11/1 - check for a new username for that connection Id **/
+                return "logged on with another username";
+            }
+
             for (User u : all_user_array) {
                 if (u.getName().equals(userName)) {  // found the name of the user
                     if (connections.getActiveClientMap().containsKey(connectionId))      //User is already logged on
                         return "logged on";
                     else {
                         if (u.getPassword().equals(userPassword)) {                      //User name + password are correct
-                            active_user_id_map.put(connectionId, u);                      //adding curr user & id to the map
+                            active_user_id_map.put(connectionId, u);                     //adding curr user & id to the map
+                            u.setConnected_successfully(true);                           /**setting the connected_successfully to true - 10/1 **/
                             return "connected";
                         } else
-                            return "wrong pass";                               //Password is incorrect
+                            return "wrong pass";                                //Password is incorrect
                     }
                 }
             }
-            int tmp_count = userCounter.incrementAndGet();                     //inc the counter of users
-            User newUsr = new User(userName, userPassword, tmp_count);           //Create new user
+            int tmp_count = userCounter.incrementAndGet();                      //inc the counter of users
+            User newUsr = new User(userName, userPassword, tmp_count);          //Create new user
             all_user_array.add(tmp_count, newUsr);                              //adding new user to the general user array, in the specified index
             active_user_id_map.put(connectionId, newUsr);                       //adding new user & connectionId to the ActiveUserMap
+            newUsr.setConnected_successfully(true);                             /**setting the connected_successfully to true - 10/1 **/
             return "connected";
         }
         //------------------- end edit 4/1 --------------------------
@@ -120,12 +129,14 @@ public class UsersControl {
      * @param connectionID
      * @return
      */
-    public boolean logoutTopicReset (Integer connectionID){                   // Integer - for removing Object, NOT index
+    public boolean logout_TopicReset_ConnectionSuccessfullyFalse (Integer connectionID){                   // Integer - for removing Object, NOT index
         //------------------- start edit 4/1 ------------------------
         for(CopyOnWriteArrayList curr_topic_array : topic_connectionId_Map.values()){
-            curr_topic_array.remove(connectionID);                            // removing the user (id) from each topic list
+            curr_topic_array.remove(connectionID);                              // removing the user (id) from each topic list
         }
-        active_user_id_map.get(connectionID).removeAllTopics();               // REMOVES ALL topics from the user -> USER
+        active_user_id_map.get(connectionID).removeAllTopics();                 // REMOVES ALL topics from the user ->
+        active_user_id_map.get(connectionID).setConnected_successfully(false);  /**setting the connected_successfully to true - 10/1 **/
+        active_user_id_map.remove(connectionID);                                /** 11/1 - removing the user from the active map **/
         return true;    //TODO: maybe a void function is enough
         //------------------- end edit 4/1 --------------------------
     }

@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.stomp.frames;
 
+import bgu.spl.net.impl.stomp.User;
 import bgu.spl.net.impl.stomp.UsersControl;
 import bgu.spl.net.srv.Connections;
 
@@ -20,8 +21,15 @@ public class UnsubscribeMsg implements Message {
 
     @Override
     public void process(int connectionID, Connections connections) {
-        UsersControl.getInstance().exitGenre(connectionID,id_givenByUser);  //will remove the user from the genre (called by id)
-        connections.send(connectionID, new ReceiptMsg(receipt,false));            //sending a receipt back to the client
+        User curr_user = UsersControl.getInstance().getUserByConnectionId(connectionID);
+        if(!curr_user.getConnected_successfully()){
+            connections.send(connectionID, new ErrorMsg("","Didn't logged in",
+                    orig_msg_from_client,"The user isn't logged in yet."));
+        }
+        else {
+            UsersControl.getInstance().exitGenre(connectionID, id_givenByUser);  //will remove the user from the genre (called by id)
+            connections.send(connectionID, new ReceiptMsg(receipt, false));            //sending a receipt back to the client
+        }
     }
 
     @Override

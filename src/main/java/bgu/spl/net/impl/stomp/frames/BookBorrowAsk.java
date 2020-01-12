@@ -1,6 +1,8 @@
 package bgu.spl.net.impl.stomp.frames;
 
+import bgu.spl.net.Pair;
 import bgu.spl.net.impl.stomp.StompMessagingProtocolImpl;
+import bgu.spl.net.impl.stomp.User;
 import bgu.spl.net.impl.stomp.UsersControl;
 import bgu.spl.net.srv.Connections;
 
@@ -22,17 +24,25 @@ public class BookBorrowAsk implements Message {
     @Override
     public void process(int connectionID, Connections connections) {
         //------------------- start edit 7/1 ------------------------
-        Integer userTopicSubNumber = UsersControl.getInstance().getUserByConnectionId(connectionID).get_SubNum_by_TopicName(destination_topic);
-        String userName = UsersControl.getInstance().getUserByConnectionId(connectionID).getName();
-        connections.send(destination_topic, new AcknowledgeMsg(
-                "MESSAGE\n" +
-                        "subscription:" + userTopicSubNumber + "\n" +
-                        "Message-id:" + StompMessagingProtocolImpl.getNewMessageId() + "\n" +
-                        "destination:" + destination_topic + "\n\n" +
+        User curr_user = UsersControl.getInstance().getUserByConnectionId(connectionID);
+        if(!curr_user.getConnected_successfully()){
+            connections.send(connectionID, new ErrorMsg("","Didn't logged in",
+                    orig_msg_from_client,"The user isn't logged in yet."));
+        }
+        else {
+            Integer userTopicSubNumber = UsersControl.getInstance().getUserByConnectionId(connectionID).get_SubNum_by_TopicName(destination_topic);
+            String userName = curr_user.getName();
 
-                        userName+" wish to borrow "+bookname+"\n"+
+            connections.send(destination_topic, new AcknowledgeMsg(
+                    "MESSAGE\n" +
+                            "subscription:" + userTopicSubNumber + "\n" +                               // the userTopicSubNumber will be changed for other connections
+                            "Message-id:" + StompMessagingProtocolImpl.getNewMessageId() + "\n" +
+                            "destination:" + destination_topic + "\n\n" +
 
-                        "^@"));                     // sending a message: borrow query
+                            userName + " wish to borrow " + bookname + "\n" +
+
+                            "^@"));                     // sending a message: borrow query
+        }
         //------------------- end edit 7/1 --------------------------
     }
 

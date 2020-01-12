@@ -25,4 +25,10 @@ public class AcknowledgeMsg implements Message {
         return msgData;
         //------------------- end edit 7/1 --------------------------
     }
+
+    public void changeMsgData(String changeTo){
+        //------------------- start edit 11/1 ------------------------
+        msgData=changeTo;
+        //------------------- end edit 11/1 --------------------------
+    }
 }
