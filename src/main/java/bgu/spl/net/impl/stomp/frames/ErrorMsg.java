@@ -28,8 +28,8 @@ public class ErrorMsg implements Message{
     @Override
     public String getMessageData() {
         return ("ERROR\n" +
-                "receipt-id: "+receipt_id+"\n"+
-                "message: "+message+"\n\n" +
+                "receipt-id:"+receipt_id+"\n"+
+                "message:"+message+"\n\n" +
                 "The message:\n"+
                 "-----\n"+
                 errored_original_msg +
