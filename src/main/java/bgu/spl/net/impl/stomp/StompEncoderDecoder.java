@@ -77,7 +77,7 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
         String [] lines = resultStr.split("[\n]");
         if (resultStr!=null) {
                 switch (lines[0]) {
-                    case ("CONNECTED"): {
+                    case ("CONNECT"): {
                         String userName = lines[3].split("[:]")[1];
                         String password = lines[4].split("[:]")[1];
                         String accept_ver = lines[1].split("[:]")[1];

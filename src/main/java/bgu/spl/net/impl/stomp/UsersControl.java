@@ -72,7 +72,7 @@ public class UsersControl {
             }
             int tmp_count = userCounter.incrementAndGet();                      //inc the counter of users
             User newUsr = new User(userName, userPassword, tmp_count);          //Create new user
-            all_user_array.add(tmp_count, newUsr);                              //adding new user to the general user array, in the specified index
+            all_user_array.add(tmp_count-1, newUsr);                              //adding new user to the general user array, in the specified index
             active_user_id_map.put(connectionId, newUsr);                       //adding new user & connectionId to the ActiveUserMap
             newUsr.setConnected_successfully(true);                             /**setting the connected_successfully to true - 10/1 **/
             return "connected";
