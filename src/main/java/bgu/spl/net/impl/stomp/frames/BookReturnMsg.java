@@ -40,7 +40,7 @@ public class BookReturnMsg implements Message {
 
                             "Returning " + bookname + " to " + book_loaner + "\n" +
 
-                            "^@"));                     // sending a message: the book is returned to the loaner
+                            "\u0000"));                     // sending a message: the book is returned to the loaner
         }
         //------------------- end edit 7/1 --------------------------
     }

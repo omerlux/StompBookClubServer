@@ -36,7 +36,7 @@ public class BookStatusAsk implements Message {
 
                             "Book status\n" +
 
-                            "^@"));                     // sending a message: book status query
+                            "\u0000"));                     // sending a message: book status query
         }
         //------------------- end edit 7/1 --------------------------
     }

@@ -41,7 +41,7 @@ public class BookBorrowAsk implements Message {
 
                             userName + " wish to borrow " + bookname + "\n" +
 
-                            "^@"));                     // sending a message: borrow query
+                            "\u0000"));                     // sending a message: borrow query
         }
         //------------------- end edit 7/1 --------------------------
     }

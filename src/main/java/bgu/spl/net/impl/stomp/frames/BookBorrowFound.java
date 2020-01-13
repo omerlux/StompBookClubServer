@@ -36,7 +36,7 @@ public class BookBorrowFound implements Message {
                         "destination:" + destination_topic + "\n\n" +
 
                         potential_giver + " has " + bookname + "\n" +
-                        "^@"));                     // sending a message: potential_giver has the
+                        "\u0000"));                     // sending a message: potential_giver has the
 
         //------------------- end edit 7/1 --------------------------
     }

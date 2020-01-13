@@ -38,7 +38,7 @@ public class BookAddMsg implements Message {
                                 "Message-id:" + StompMessagingProtocolImpl.getNewMessageId() + "\n" +
                                 "destination:" + destination_topic + "\n\n" +
                                 userName + " has added the book " + book_name + "\n" +
-                                "^@"));
+                                "\u0000"));
             }
         }
         //------------------- end edit 7/1 --------------------------

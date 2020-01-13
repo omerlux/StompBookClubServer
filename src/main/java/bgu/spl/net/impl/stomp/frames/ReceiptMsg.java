@@ -23,7 +23,7 @@ public class ReceiptMsg implements Message {
     public String getMessageData() {
         return("RECEIPT\n" +
                 "receipt-id: "+receipt_id+"\n\n"+
-                "^@");
+                "\u0000");
     }
 
     public boolean getDisconnectMsg(){

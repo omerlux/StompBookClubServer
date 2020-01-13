@@ -37,7 +37,7 @@ public class BookBorrowSent implements Message {
                         "destination:" + destination_topic + "\n\n" +
 
                         "Taking " + bookname + " from " + book_giver + "\n" +
-                        "^@"));                     // sending a message: a giver borrowed the user
+                        "\u0000"));                     // sending a message: a giver borrowed the user
         //------------------- end edit 7/1 --------------------------
     }
 

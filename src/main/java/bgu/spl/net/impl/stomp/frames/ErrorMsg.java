@@ -35,6 +35,6 @@ public class ErrorMsg implements Message{
                 errored_original_msg +
                 "-----\n"+
                 details+"\n"+
-                "^@");
+                "\u0000");
     }
 }

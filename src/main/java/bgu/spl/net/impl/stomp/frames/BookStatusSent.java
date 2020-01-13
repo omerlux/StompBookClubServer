@@ -32,7 +32,7 @@ public class BookStatusSent implements Message {
 
                         userName + ":" + bookList + "\n" +
 
-                        "^@"));                     // sending a message: username books status
+                        "\u0000"));                     // sending a message: username books status
         //------------------- end edit 7/1 --------------------------
     }
 
