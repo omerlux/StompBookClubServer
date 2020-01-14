@@ -21,7 +21,6 @@ public class ConnectionsImpl<T> implements Connections<T> {
      * @param readWriteLock - a lock for read and write.
      */
     //------------------- start edit 14/1 ------------------------
-    //TODO: watch for THREAD SAFE
     private Map<Integer , ConnectionHandler<T>> active_client_map;
     private AtomicInteger id_count;
     private ReadWriteLock readWriteLock;
@@ -73,7 +72,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
         //------------------- start edit 11/1 ------------------------
         if(UsersControl.getInstance().getTopicList(topic)!=null) {
             for (Integer curr_id : UsersControl.getInstance().getTopicList(topic)) {
-                readWriteLock.readLock().lock();                //TODO: should we lock here?
+                readWriteLock.readLock().lock();
                 if (active_client_map.containsKey(curr_id)) {
                     //those few actions are to change the subscription id that we send to.
                     changeSubUserId_msg((Message) msg, curr_id);
@@ -93,7 +92,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
         //------------------- start edit 4/1 ------------------------
         readWriteLock.writeLock().lock();
         try {
-            active_client_map.get(connectionId).close();        //TODO: maybe redundant
+            active_client_map.get(connectionId).close();
             active_client_map.remove(connectionId);
         } catch (IOException e) {
             e.printStackTrace();

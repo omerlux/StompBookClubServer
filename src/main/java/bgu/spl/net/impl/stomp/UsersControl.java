@@ -127,7 +127,7 @@ public class UsersControl {
      * This function will logout the user from the server, by resetting the topics subscriptions
      * Here we ONLY removes it from the topics it was registered to,
      * >>> send receipt frame, disconnect from Connections - Done in LogoutMsg
-     * TODO: close socket in client
+     * The socket will close in client
      * @param connectionID
      * @return
      */
@@ -139,7 +139,7 @@ public class UsersControl {
         active_user_id_map.get(connectionID).removeAllTopics();                 // REMOVES ALL topics from the user ->
         active_user_id_map.get(connectionID).setConnected_successfully(false);  /**setting the connected_successfully to true - 10/1 **/
         active_user_id_map.remove(connectionID);                                /** 11/1 - removing the user from the active map **/
-        return true;    //TODO: maybe a void function is enough
+        return true;
         //------------------- end edit 4/1 --------------------------
     }
 
