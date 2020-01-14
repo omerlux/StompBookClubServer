@@ -58,7 +58,8 @@ public class UsersControl {
 
             for (User u : all_user_array) {
                 if (u.getName().equals(userName)) {  // found the name of the user
-                    if (connections.getActiveClientMap().containsKey((Integer)connectionId))      //User is already logged on
+                    //if (connections.getActiveClientMap().containsKey((Integer)connectionId))      //User is already logged on
+                    if(active_user_id_map.contains(connectionId))                       // User is already logged on
                         return "logged on";
                     else {
                         if (u.getPassword().equals(userPassword)) {                      //User name + password are correct
