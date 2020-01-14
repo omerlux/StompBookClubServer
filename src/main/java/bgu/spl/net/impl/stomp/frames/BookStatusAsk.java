@@ -27,16 +27,16 @@ public class BookStatusAsk implements Message {
                     orig_msg_from_client,"The user isn't logged in yet."));
         }
         else {
-            Integer userTopicSubNumber = UsersControl.getInstance().getUserByConnectionId(connectionID).get_SubNum_by_TopicName(destination_topic);
+            //Integer userTopicSubNumber = UsersControl.getInstance().getUserByConnectionId(connectionID).get_SubNum_by_TopicName(destination_topic);
             connections.send(destination_topic, new AcknowledgeMsg(
                     "MESSAGE\n" +
-                            "subscription:" + userTopicSubNumber + "\n" +                               // the userTopicSubNumber will be changed for other connections
+                            "subscription:" + "$" + "\n" +                               // the userTopicSubNumber will be changed for other connections
                             "Message-id:" + StompMessagingProtocolImpl.getNewMessageId() + "\n" +
                             "destination:" + destination_topic + "\n\n" +
 
                             "Book status\n" +
 
-                            "^@"));                     // sending a message: book status query
+                            "\u0000"));                     // sending a message: book status query
         }
         //------------------- end edit 7/1 --------------------------
     }

@@ -29,17 +29,17 @@ public class BookAddMsg implements Message {
                     orig_msg_from_client,"The user isn't logged in yet."));
         }
         else {
-            Integer userTopicSubNumber = UsersControl.getInstance().getUserByConnectionId(connectionID).get_SubNum_by_TopicName(destination_topic);
+            //Integer userTopicSubNumber = UsersControl.getInstance().getUserByConnectionId(connectionID).get_SubNum_by_TopicName(destination_topic);
             String userName = curr_user.getName();
-            if (userTopicSubNumber != null) {
+            //if (userTopicSubNumber != null) {
                 connections.send(destination_topic, new AcknowledgeMsg(
                         "MESSAGE\n" +
-                                "subscription:" + userTopicSubNumber + "\n" +
+                                "subscription:" + "$" + "\n" +               // 00 is general number that
                                 "Message-id:" + StompMessagingProtocolImpl.getNewMessageId() + "\n" +
                                 "destination:" + destination_topic + "\n\n" +
                                 userName + " has added the book " + book_name + "\n" +
-                                "^@"));
-            }
+                                "\u0000"));
+            //}
         }
         //------------------- end edit 7/1 --------------------------
     }

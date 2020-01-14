@@ -32,9 +32,9 @@ public class ErrorMsg implements Message{
                 "message:"+message+"\n\n" +
                 "The message:\n"+
                 "-----\n"+
-                errored_original_msg +
+                errored_original_msg.substring(0,errored_original_msg.length()-3) + // subtract the ^@
                 "-----\n"+
                 details+"\n"+
-                "^@");
+                "\u0000");
     }
 }

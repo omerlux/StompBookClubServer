@@ -22,17 +22,17 @@ public class BookStatusSent implements Message {
     @Override
     public void process(int connectionID, Connections connections) {
         //------------------- start edit 7/1 --------------------------
-        Integer userTopicSubNumber = UsersControl.getInstance().getUserByConnectionId(connectionID).get_SubNum_by_TopicName(destination_topic);
+        //Integer userTopicSubNumber = UsersControl.getInstance().getUserByConnectionId(connectionID).get_SubNum_by_TopicName(destination_topic);
         String userName = UsersControl.getInstance().getUserByConnectionId(connectionID).getName();
         connections.send(destination_topic, new AcknowledgeMsg(
                 "MESSAGE\n" +
-                        "subscription:" + userTopicSubNumber + "\n" +                               // the userTopicSubNumber will be changed for other connections
+                        "subscription:" + "$" + "\n" +                               // the userTopicSubNumber will be changed for other connections
                         "Message-id:" + StompMessagingProtocolImpl.getNewMessageId() + "\n" +
                         "destination:" + destination_topic + "\n\n" +
 
                         userName + ":" + bookList + "\n" +
 
-                        "^@"));                     // sending a message: username books status
+                        "\u0000"));                     // sending a message: username books status
         //------------------- end edit 7/1 --------------------------
     }
 
