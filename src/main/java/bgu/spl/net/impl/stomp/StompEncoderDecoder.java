@@ -110,9 +110,9 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
                         } else if (lines[3].contains("has")) {
                             String[] msgDetails = lines[3].split("[ ]");
                             String bookname = "";
-                            for (int i = 2; i < msgDetails.length - 1; i++) {                             //If the book name is more that one word, then we will create a string for the name with for loop
-                                bookname = msgDetails[i];
-                                if (i < msgDetails.length - 2)
+                            for (int i = 2; i < msgDetails.length ; i++) {                             //If the book name is more that one word, then we will create a string for the name with for loop
+                                bookname += msgDetails[i];
+                                if (i < msgDetails.length - 1)
                                     bookname = bookname + " ";
                             }
                             String potential_giver = msgDetails[0];
@@ -121,7 +121,7 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
                             String[] msgDetails = lines[3].split("[ ]");
                             String bookname = "";
                             for (int i = 1; i < msgDetails.length - 2; i++) {                             //If the book name is more that one word, then we will create a string for the name with for loop
-                                bookname = msgDetails[i];
+                                bookname += msgDetails[i];
                                 if (i < msgDetails.length - 3)
                                     bookname = bookname + " ";
                             }
@@ -131,7 +131,7 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
                             String[] msgDetails = lines[3].split("[ ]");
                             String bookname = "";
                             for (int i = 1; i < msgDetails.length - 2; i++) {                             //If the book name is more that one word, then we will create a string for the name with for loop
-                                bookname = msgDetails[i];
+                                bookname += msgDetails[i];
                                 if (i < msgDetails.length - 3)
                                     bookname = bookname + " ";
                             }
