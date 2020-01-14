@@ -79,9 +79,9 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
         if (resultStr!=null) {
                 switch (lines[0]) {
                     case ("CONNECT"): {
+                        String accept_ver = lines[1].split("[:]")[1];
                         String userName = lines[3].split("[:]")[1];
                         String password = lines[4].split("[:]")[1];
-                        String accept_ver = lines[1].split("[:]")[1];
                         result = new LoginMsg(userName, password, accept_ver, resultStr);
                         break;
                     }
@@ -100,14 +100,15 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
                     }
                     case ("SEND"): {
                         String destination_topic = lines[1].split("[:]")[1];
-                        if (lines[2].contains("added")) {
-                            String book_name = lines[2].split("has added the book ")[1];       //Splits the text from the word "book" and after
+                        //line 2 is "\n"
+                        if (lines[3].contains("added")) {
+                            String book_name = lines[3].split("has added the book ")[1];       //Splits the text from the word "book" and after
                             result = new BookAddMsg(destination_topic, book_name, resultStr);
-                        } else if (lines[2].contains("borrow")) {
-                            String book_name = lines[2].split("wish to borrow ")[1];          //Splits the text from the word "borrow" and after
+                        } else if (lines[3].contains("borrow")) {
+                            String book_name = lines[3].split("wish to borrow ")[1];          //Splits the text from the word "borrow" and after
                             result = new BookBorrowAsk(destination_topic, book_name, resultStr);
-                        } else if (lines[2].contains("has")) {
-                            String[] msgDetails = lines[2].split("[ ]");
+                        } else if (lines[3].contains("has")) {
+                            String[] msgDetails = lines[3].split("[ ]");
                             String bookname = "";
                             for (int i = 2; i < msgDetails.length - 1; i++) {                             //If the book name is more that one word, then we will create a string for the name with for loop
                                 bookname = msgDetails[i];
@@ -116,8 +117,8 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
                             }
                             String potential_giver = msgDetails[0];
                             result = new BookBorrowFound(destination_topic, bookname, potential_giver, resultStr);
-                        } else if (lines[2].contains("Taking")) {
-                            String[] msgDetails = lines[2].split("[ ]");
+                        } else if (lines[3].contains("Taking")) {
+                            String[] msgDetails = lines[3].split("[ ]");
                             String bookname = "";
                             for (int i = 1; i < msgDetails.length - 2; i++) {                             //If the book name is more that one word, then we will create a string for the name with for loop
                                 bookname = msgDetails[i];
@@ -126,8 +127,8 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
                             }
                             String book_giver = msgDetails[msgDetails.length - 1];
                             result = new BookBorrowSent(destination_topic, bookname, book_giver, resultStr);
-                        } else if (lines[2].contains("Returning")) {
-                            String[] msgDetails = lines[2].split("[ ]");
+                        } else if (lines[3].contains("Returning")) {
+                            String[] msgDetails = lines[3].split("[ ]");
                             String bookname = "";
                             for (int i = 1; i < msgDetails.length - 2; i++) {                             //If the book name is more that one word, then we will create a string for the name with for loop
                                 bookname = msgDetails[i];
@@ -136,10 +137,10 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
                             }
                             String book_loaner = msgDetails[msgDetails.length - 1];
                             result = new BookReturnMsg(destination_topic, bookname, book_loaner, resultStr);
-                        } else if (lines[2].contains("status")) {
+                        } else if (lines[3].contains("status")) {
                             result = new BookStatusAsk(destination_topic, resultStr);
                         } else {
-                            String bookList = lines[2].split("[:]")[1];
+                            String bookList = lines[3].split("[:]")[1];
                             result = new BookStatusSent(destination_topic, bookList, resultStr);
                         }
                         break;

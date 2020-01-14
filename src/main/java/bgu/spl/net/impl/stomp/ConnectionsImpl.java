@@ -62,18 +62,16 @@ public class ConnectionsImpl<T> implements Connections<T> {
      */
     public void send(String topic, T msg) {
         //------------------- start edit 11/1 ------------------------
-        for(Integer curr_id : UsersControl.getInstance().getTopicList(topic)){
-            readWriteLock.readLock().lock();                //TODO: should we lock here?
-            if(active_client_map.containsKey(curr_id)){
-                String tmp_string = ((Message)msg).getMessageData();                                            //those few actions are to change the subscription id that we send to.
-                int index_dot = tmp_string.indexOf(":");
-                int index_n = tmp_string.indexOf("\n",index_dot);
-                ((AcknowledgeMsg)msg).changeMsgData(
-                        tmp_string.substring(0,index_dot+1) + curr_id + tmp_string.substring(index_n)
-                );
-                active_client_map.get(curr_id).send(msg);
+        if(UsersControl.getInstance().getTopicList(topic)!=null) {
+            for (Integer curr_id : UsersControl.getInstance().getTopicList(topic)) {
+                readWriteLock.readLock().lock();                //TODO: should we lock here?
+                if (active_client_map.containsKey(curr_id)) {
+                    //those few actions are to change the subscription id that we send to.
+                    changeSubUserId_msg((Message) msg, curr_id);
+                    active_client_map.get(curr_id).send(msg);
+                }
+                readWriteLock.readLock().unlock();
             }
-            readWriteLock.readLock().unlock();
         }
         //------------------- end edit 11/1 --------------------------
     }
@@ -123,4 +121,12 @@ public class ConnectionsImpl<T> implements Connections<T> {
         return active_client_map;
     }
 
+    private Message changeSubUserId_msg(Message orig_msg, int currId){
+        //------------------- start edit 14/1 ------------------------
+        String msg_str = orig_msg.getMessageData();
+        msg_str = msg_str.replace("$",Integer.toString(currId));
+        ((AcknowledgeMsg)orig_msg).changeMsgData(msg_str);
+        return orig_msg;
+        //------------------- end edit 14/1 --------------------------
+    }
 }

@@ -44,12 +44,12 @@ public class LoginMsg implements Message {
                 break;
             }
             case "logged on with another username" :{           // 11/1
-                connections.send(connectionID, new ErrorMsg("","logged on with another username",
+                connections.send(connectionID, new ErrorMsg("","logged in with another user",
                         getMessageData(),"Some user is already logged in from this client."));
                 break;
             }
             case "wrong pass" : {
-                connections.send(connectionID, new ErrorMsg("","wrong pass",
+                connections.send(connectionID, new ErrorMsg("","wrong password",
                         getMessageData(),"User is exist, but trying to login with wrong password."));
                 break;
             }
