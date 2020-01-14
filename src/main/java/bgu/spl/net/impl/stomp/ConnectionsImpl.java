@@ -20,12 +20,15 @@ public class ConnectionsImpl<T> implements Connections<T> {
      * @param id_count - an Atomic Integer to count how many clients are active.
      * @param readWriteLock - a lock for read and write.
      */
-    //------------------- start edit 4/1 ------------------------
+    //------------------- start edit 14/1 ------------------------
     //TODO: watch for THREAD SAFE
     private Map<Integer , ConnectionHandler<T>> active_client_map;
     private AtomicInteger id_count;
     private ReadWriteLock readWriteLock;
-    //------------------- end edit 4/1 --------------------------
+    private static class SingletonHolder {
+        private static ConnectionsImpl connections = new ConnectionsImpl<>();
+    }
+    //------------------- end edit 14/1 --------------------------
 
     public ConnectionsImpl(){
         //------------------- start edit 4/1 ------------------------
@@ -33,6 +36,12 @@ public class ConnectionsImpl<T> implements Connections<T> {
         id_count = new AtomicInteger(0);
         readWriteLock = new ReentrantReadWriteLock();
         //------------------- end edit 4/1 --------------------------
+    }
+
+    public static ConnectionsImpl getInstance(){
+        //------------------- start edit 14/1 ------------------------
+        return SingletonHolder.connections;
+        //------------------- end edit 14/1 --------------------------
     }
 
     @Override

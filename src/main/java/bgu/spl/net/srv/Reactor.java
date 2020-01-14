@@ -41,7 +41,7 @@ public class Reactor<T> implements Server<T> {
         this.protocolFactory = protocolFactory;
         this.readerFactory = readerFactory;
         //------------------- start edit 4/1 ------------------------
-        this.connections = new ConnectionsImpl<>();
+        this.connections = ConnectionsImpl.getInstance();
         //------------------- end edit 4/1 --------------------------
 
     }

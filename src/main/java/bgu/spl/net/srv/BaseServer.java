@@ -29,9 +29,9 @@ public abstract class BaseServer<T> implements Server<T> {
         this.protocolFactory = protocolFactory;
         this.encdecFactory = encdecFactory;
 		this.sock = null;
-        //------------------- start edit 4/1 ------------------------
-        this.connections = new ConnectionsImpl<>();
-        //------------------- end edit 4/1 --------------------------
+        //------------------- start edit 14/1 ------------------------
+        this.connections = ConnectionsImpl.getInstance();
+        //------------------- end edit 14/1 --------------------------
     }
 
     @Override
