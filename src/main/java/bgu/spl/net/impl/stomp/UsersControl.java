@@ -50,7 +50,7 @@ public class UsersControl {
      * @return "wrong pass" if password is incorrect
      */
     public String login(int connectionId, String userName, String userPassword){
-        //------------------- start edit 4/1 ------------------------
+        //------------------- start edit 14/1 ------------------------
         synchronized (all_user_array) {         // sync all users, because 2 may create the same username
             if(active_user_id_map.containsKey(connectionId) && !active_user_id_map.get(connectionId).getName().equals(userName)){         /** 11/1 - check for a new username for that connection Id **/
                 return "logged on with another username";
@@ -59,7 +59,7 @@ public class UsersControl {
             for (User u : all_user_array) {
                 if (u.getName().equals(userName)) {  // found the name of the user
                     //if (connections.getActiveClientMap().containsKey((Integer)connectionId))      //User is already logged on
-                    if(active_user_id_map.contains(connectionId))                       // User is already logged on
+                    if(active_user_id_map.containsKey((Integer)connectionId))                       // User is already logged on
                         return "logged on";
                     else {
                         if (u.getPassword().equals(userPassword)) {                      //User name + password are correct
@@ -78,7 +78,7 @@ public class UsersControl {
             newUsr.setConnected_successfully(true);                             /**setting the connected_successfully to true - 10/1 **/
             return "connected";
         }
-        //------------------- end edit 4/1 --------------------------
+        //------------------- end edit 14/1 --------------------------
     }
 
     /**

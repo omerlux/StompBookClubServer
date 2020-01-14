@@ -9,20 +9,22 @@ import java.util.Arrays;
 
 public class StompEncoderDecoder implements MessageEncoderDecoder {
 
-    /** Comment to us: Since we are reading and sending strings, this class is pretty much the same
+    /**
+     * Comment to us: Since we are reading and sending strings, this class is pretty much the same
      * as the encoder-decoder of the echo. Maybe still more things need to be add? 7/1
      */
 
 
     //------------------- start edit 7/1 ------------------------
     private byte[] bytes = new byte[1 << 10]; //Start with 1K
-    private int len  = 0;
+    private int len = 0;
     //------------------- end edit 7/1 --------------------------
 
     /**
      * Checks the next byte reading
+     *
      * @param nextByte the next byte to consider for the currently decoded
-     * message
+     *                 message
      * @return String if we finish to read msg, or null otherwise
      */
     @Override
@@ -30,7 +32,7 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
         //------------------- start edit 7/1 ------------------------
         //notice that the top 128 ascii characters have the same representation as their utf-8 counterparts
         //this allow us to do the following comparison
-        if (nextByte=='\u0000')                            //End of message, ^@ = \u0000
+        if (nextByte == '\u0000')                            //End of message, ^@ = \u0000
             return popStringToMsg();
         pushByte(nextByte);
         return null;                                      //Still not the end
@@ -39,19 +41,21 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
 
     /**
      * Convert string to bytes[]
+     *
      * @param message the message to encode
      * @return The message in bytes
      */
     @Override
     public byte[] encode(Object message) {
         //------------------- start edit 7/1 ------------------------
-        String msg = ((Message)message).getMessageData();   // this message is Message for sure
+        String msg = ((Message) message).getMessageData();   // this message is Message for sure
         return msg.getBytes();
         //------------------- end edit 7/1 --------------------------
     }
 
     /**
      * Make bytes[] bigger id needed, or just read the next byte
+     *
      * @param nextByte
      */
     private void pushByte(byte nextByte) {
@@ -65,6 +69,7 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
 
     /**
      * Convert bytes[] to string and then create a message object
+     *
      * @return The message
      */
     private Message popStringToMsg() {
@@ -75,8 +80,9 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
         Message result = null;
         String resultStr = new String(bytes, 0, len, StandardCharsets.UTF_8);
         len = 0;
-        String [] lines = resultStr.split("[\n]");
-        if (resultStr!=null) {
+        String[] lines = resultStr.split("[\n]");
+        if (resultStr != null) {
+            try {
                 switch (lines[0]) {
                     case ("CONNECT"): {
                         String accept_ver = lines[1].split("[:]")[1];
@@ -110,7 +116,7 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
                         } else if (lines[3].contains("has")) {
                             String[] msgDetails = lines[3].split("[ ]");
                             String bookname = "";
-                            for (int i = 2; i < msgDetails.length ; i++) {                             //If the book name is more that one word, then we will create a string for the name with for loop
+                            for (int i = 2; i < msgDetails.length; i++) {                             //If the book name is more that one word, then we will create a string for the name with for loop
                                 bookname += msgDetails[i];
                                 if (i < msgDetails.length - 1)
                                     bookname = bookname + " ";
@@ -151,9 +157,13 @@ public class StompEncoderDecoder implements MessageEncoderDecoder {
                         break;
                     }
                 }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                result = new ErrorMsg("00","wrong frame",resultStr,"there is no such command");
+            }
         }
         return result;
         //------------------- end edit 10/1 --------------------------
     }
 }
+
 
