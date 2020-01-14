@@ -27,7 +27,7 @@ public class UsersControl {
         //------------------- start edit 11/1 ------------------------
         all_user_array = new CopyOnWriteArrayList<>();
         active_user_id_map = new ConcurrentHashMap<>();
-        connections = new ConnectionsImpl();
+        connections = ConnectionsImpl.getInstance();
         topic_connectionId_Map = new ConcurrentHashMap<>();
         userCounter=new AtomicInteger(0);
         //------------------- end edit 11/1 --------------------------
@@ -99,6 +99,7 @@ public class UsersControl {
             } else
                 return false; //this user has already subscribed to this topic
         }
+        active_user_id_map.get(connectionId).addTopic(topic, topic_idByUser);   // ADDING topic_id by user to user-> USER
         return true; // subscribed success
         //------------------- end edit 7/1 --------------------------
     }
