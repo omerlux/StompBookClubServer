@@ -21,11 +21,11 @@ public class LogoutMsg implements Message {
         //------------------- start edit 7/1 ------------------------
         UsersControl.getInstance().logout_TopicReset_ConnectionSuccessfullyFalse(connectionID);      //Remove user from all topic - changed in the 10/1
         connections.send(connectionID, new ReceiptMsg(reciept,true));        //Send receipt to client
-        try {
-            Thread.currentThread().sleep(10);   //sleeping for letting the main thread to send the information
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    Thread.currentThread().sleep(10);   //sleeping for letting the main thread to send the information
+        //} catch (InterruptedException e) {
+        //      e.printStackTrace();
+        //}
         connections.disconnect(connectionID);                           //Disconnect from connections
         //------------------- end edit 7/1 --------------------------
     }

@@ -91,12 +91,14 @@ public class ConnectionsImpl<T> implements Connections<T> {
     public void disconnect(int connectionId) {
         //------------------- start edit 4/1 ------------------------
         readWriteLock.writeLock().lock();
-        try {
-            active_client_map.get(connectionId).close();
+
+        //try {
+            //active_client_map.get(connectionId).close();
             active_client_map.remove(connectionId);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //} catch (IOException e) {
+         //   e.printStackTrace();
+        //}
+
         readWriteLock.writeLock().unlock();
         //------------------- end edit 4/1 --------------------------
     }

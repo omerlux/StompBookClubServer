@@ -2,6 +2,7 @@ package bgu.spl.net.impl.stomp;
 
 import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocol;
+import bgu.spl.net.impl.stomp.frames.LogoutMsg;
 import bgu.spl.net.impl.stomp.frames.Message;
 import bgu.spl.net.srv.Connections;
 
@@ -39,6 +40,8 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     public void process(Message message) {
         //------------------- start edit 4/1 ------------------------
         message.process(connectionId,connections);
+        if(message instanceof LogoutMsg)
+            this.terminate();
         //------------------- end edit 4/1 --------------------------
 
     }
