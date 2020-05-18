@@ -1,6 +1,8 @@
 # spl-net
 This was the third assignemnt in the course SPL201 - java server for Book Club
 
+Implementing a thread safe Server (Java) - TPC and Reactor patterns, and a multiple thread Client (Cpp). Server-Client Communication according to 'STOMP' protocol.
+
 For running, do the following steps:
 
 1) terminal command: ~/bin/mvn compile
